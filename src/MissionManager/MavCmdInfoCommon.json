@@ -218,13 +218,13 @@
                 "label":            "Heading wait",
                 "enumStrings":      "False,True",
                 "enumValues":       "0,1",
-                "default":          0,
+                "default":          1,
                 "decimalPlaces":    0
             },
             "param2": {
                 "label":            "Radius",
                 "units":            "m",
-                "default":          50.0,
+                "default":          60.0,
                 "decimalPlaces":    2
             },
             "param4": {
