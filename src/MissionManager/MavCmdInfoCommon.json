@@ -175,7 +175,7 @@
             "param1": {
                 "label":            "Pitch",
                 "units":            "deg",
-                "default":          15,
+                "default":          20,
                 "decimalPlaces":    2
             },
             "param4": {
