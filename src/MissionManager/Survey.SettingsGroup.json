@@ -11,7 +11,7 @@
     "type":             "double",
     "units":            "m",
     "decimalPlaces":    1,
-    "defaultValue":     50
+    "defaultValue":     100
 },
 {
     "name":             "GridAltitudeRelative",
@@ -64,7 +64,7 @@
     "min":              0,
     "max":              85,
     "units":            "%",
-    "defaultValue":     10
+    "defaultValue":     80
 },
 {
     "name":             "SideOverlap",
@@ -74,7 +74,7 @@
     "min":              0,
     "max":              85,
     "units":            "%",
-    "defaultValue":     10
+    "defaultValue":     60
 },
 {
     "name":             "CameraSensorWidth",
