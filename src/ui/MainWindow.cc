@@ -45,6 +45,7 @@
 #ifndef __mobile__
 #include "Linecharts.h"
 #include "QGCUASFileViewMulti.h"
+#include "Windguru.h"
 #include "CustomCommandWidget.h"
 #include "QGCDockWidget.h"
 #include "HILDockWidget.h"
@@ -69,7 +70,8 @@ enum DockWidgetTypes {
     ONBOARD_FILES,
     DEPRECATED_WIDGET,
     HIL_CONFIG,
-    ANALYZE
+    ANALYZE,
+    WINDGURU
 };
 
 static const char *rgDockWidgetNames[] = {
@@ -78,7 +80,8 @@ static const char *rgDockWidgetNames[] = {
     "Onboard Files",
     "Deprecated Widget",
     "HIL Config",
-    "Analyze"
+    "Analyze",
+    "Windguru"
 };
 
 #define ARRAY_SIZE(ARRAY) (sizeof(ARRAY) / sizeof(ARRAY[0]))
@@ -365,6 +368,9 @@ bool MainWindow::_createInnerDockWidget(const QString& widgetName)
                 break;
             case ANALYZE:
                 widget = new Linecharts(widgetName, action, _mavLinkDecoderInstance(), this);
+                break;
+            case WINDGURU:
+                widget = new Windguru(widgetName, action, this);
                 break;
         }
         if(widget) {
