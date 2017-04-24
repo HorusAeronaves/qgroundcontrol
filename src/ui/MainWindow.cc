@@ -47,6 +47,7 @@
 #include "QGCUASFileViewMulti.h"
 #include "UASQuickView.h"
 #include "QGCTabbedInfoView.h"
+#include "Windguru.h"
 #include "CustomCommandWidget.h"
 #include "QGCDockWidget.h"
 #include "HILDockWidget.h"
@@ -71,7 +72,8 @@ enum DockWidgetTypes {
     ONBOARD_FILES,
     INFO_VIEW,
     HIL_CONFIG,
-    ANALYZE
+    ANALYZE,
+    WINDGURU
 };
 
 static const char *rgDockWidgetNames[] = {
@@ -80,7 +82,8 @@ static const char *rgDockWidgetNames[] = {
     "Onboard Files",
     "Info View",
     "HIL Config",
-    "Analyze"
+    "Analyze",
+    "Windguru"
 };
 
 #define ARRAY_SIZE(ARRAY) (sizeof(ARRAY) / sizeof(ARRAY[0]))
@@ -369,6 +372,9 @@ bool MainWindow::_createInnerDockWidget(const QString& widgetName)
                 break;
             case INFO_VIEW:
                 widget= new QGCTabbedInfoView(widgetName, action, this);
+                break;
+            case WINDGURU:
+                widget = new Windguru(widgetName, action, this);
                 break;
         }
         if(action->data().toInt() == INFO_VIEW) {
