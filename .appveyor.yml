@@ -56,16 +56,3 @@ artifacts:
 
   - path: symbols\**\*.*_
     name: symbols
-
-deploy:
-
-# deploy tagged releases to Github releases
-  - provider: GitHub
-    auth_token:
-      secure: MPybFEONn3NIIbqmODvKHH9zTrZWJ/0S8CKWqoCdiF8
-    artifact: qgcinstaller
-    draft: false
-    prerelease: false
-    on:
-      CONFIG: installer
-      appveyor_repo_tag: true
