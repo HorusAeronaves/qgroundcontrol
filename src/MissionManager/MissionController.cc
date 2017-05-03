@@ -19,6 +19,7 @@
 #include "SurveyMissionItem.h"
 #include "FixedWingLandingComplexItem.h"
 #include "StructureScanComplexItem.h"
+#include "HorusMissionComplexItem.h"
 #include "JsonHelper.h"
 #include "ParameterManager.h"
 #include "QGroundControlQmlGlobal.h"
@@ -62,6 +63,7 @@ MissionController::MissionController(PlanMasterController* masterController, QOb
     , _surveyMissionItemName(tr("Survey"))
     , _fwLandingMissionItemName(tr("Fixed Wing Landing"))
     , _structureScanMissionItemName(tr("Structure Scan"))
+    , _horusMissionItemName(tr("Horus Mission Item"))
     , _appSettings(qgcApp()->toolbox()->settingsManager()->appSettings())
     , _progressPct(0)
 {
@@ -383,6 +385,8 @@ int MissionController::insertComplexMissionItem(QString itemName, QGeoCoordinate
         newItem = new FixedWingLandingComplexItem(_controllerVehicle, _visualItems);
     } else if (itemName == _structureScanMissionItemName) {
         newItem = new StructureScanComplexItem(_controllerVehicle, _visualItems);
+    } else if (itemName == _horusMissionItemName) {
+        newItem = new HorusMissionComplexItem(_controllerVehicle, _visualItems);
     } else {
         qWarning() << "Internal error: Unknown complex item:" << itemName;
         return sequenceNumber;
@@ -1855,6 +1859,7 @@ QStringList MissionController::complexMissionItemNames(void) const
     complexItems.append(_surveyMissionItemName);
     if (_controllerVehicle->fixedWing()) {
         complexItems.append(_fwLandingMissionItemName);
+        complexItems.append(_horusMissionItemName);
     }
     if (_controllerVehicle->multiRotor() || _controllerVehicle->vtol()) {
         complexItems.append(_structureScanMissionItemName);
