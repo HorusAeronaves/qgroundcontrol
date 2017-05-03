@@ -494,6 +494,7 @@ HEADERS += \
     src/MissionManager/CameraSection.h \
     src/MissionManager/ComplexMissionItem.h \
     src/MissionManager/FixedWingLandingComplexItem.h \
+    src/MissionManager/HorusMissionComplexItem.h \
     src/MissionManager/GeoFenceController.h \
     src/MissionManager/GeoFenceManager.h \
     src/MissionManager/MissionCommandList.h \
@@ -674,6 +675,7 @@ SOURCES += \
     src/MissionManager/CameraSection.cc \
     src/MissionManager/ComplexMissionItem.cc \
     src/MissionManager/FixedWingLandingComplexItem.cc \
+    src/MissionManager/HorusMissionComplexItem.cc \
     src/MissionManager/GeoFenceController.cc \
     src/MissionManager/GeoFenceManager.cc \
     src/MissionManager/MissionCommandList.cc \
@@ -1063,6 +1065,16 @@ AndroidBuild {
 }
 
 #-------------------------------------------------------------------------------------
+#
+#Copy horus plan
+#
+
+copydata.commands = $$QMAKE_COPY $$shell_path($$QGCROOT/horus.plan) $$shell_path($$DESTDIR)
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata
+
 #
 # Post link configuration
 #
