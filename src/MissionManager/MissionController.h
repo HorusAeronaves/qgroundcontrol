@@ -221,6 +221,7 @@ private:
     MissionFlightStatus_t   _missionFlightStatus;
     QString                 _surveyMissionItemName;
     QString                 _fwLandingMissionItemName;
+    QString                 _horusMissionItemName;
     AppSettings*            _appSettings;
     double                  _progressPct;
 

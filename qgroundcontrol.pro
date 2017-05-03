@@ -467,6 +467,7 @@ HEADERS += \
     src/MissionManager/CameraSection.h \
     src/MissionManager/ComplexMissionItem.h \
     src/MissionManager/FixedWingLandingComplexItem.h \
+    src/MissionManager/HorusMissionComplexItem.h \
     src/MissionManager/GeoFenceController.h \
     src/MissionManager/GeoFenceManager.h \
     src/MissionManager/MissionCommandList.h \
@@ -654,6 +655,7 @@ SOURCES += \
     src/MissionManager/CameraSection.cc \
     src/MissionManager/ComplexMissionItem.cc \
     src/MissionManager/FixedWingLandingComplexItem.cc \
+    src/MissionManager/HorusMissionComplexItem.cc \
     src/MissionManager/GeoFenceController.cc \
     src/MissionManager/GeoFenceManager.cc \
     src/MissionManager/MissionCommandList.cc \
