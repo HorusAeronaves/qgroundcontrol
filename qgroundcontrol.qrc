@@ -60,6 +60,7 @@
         <file alias="QGroundControl/Controls/FlightModeDropdown.qml">src/QmlControls/FlightModeDropdown.qml</file>
         <file alias="QGroundControl/Controls/FlightModeMenu.qml">src/QmlControls/FlightModeMenu.qml</file>
         <file alias="QGroundControl/Controls/FWLandingPatternMapVisual.qml">src/PlanView/FWLandingPatternMapVisual.qml</file>
+        <file alias="QGroundControl/Controls/HorusMissionPatternMapVisual.qml">src/PlanView/HorusMissionPatternMapVisual.qml</file>
         <file alias="QGroundControl/Controls/GeoFenceEditor.qml">src/PlanView/GeoFenceEditor.qml</file>
         <file alias="QGroundControl/Controls/GeoFenceMapVisuals.qml">src/PlanView/GeoFenceMapVisuals.qml</file>
         <file alias="QGroundControl/Controls/IndicatorButton.qml">src/QmlControls/IndicatorButton.qml</file>
@@ -181,6 +182,7 @@
         <file alias="SimpleItemEditor.qml">src/PlanView/SimpleItemEditor.qml</file>
         <file alias="SurveyItemEditor.qml">src/PlanView/SurveyItemEditor.qml</file>
         <file alias="FWLandingPatternEditor.qml">src/PlanView/FWLandingPatternEditor.qml</file>
+        <file alias="HorusMissionPatternEditor.qml">src/PlanView/HorusMissionPatternEditor.qml</file>
         <file alias="MissionSettingsEditor.qml">src/PlanView/MissionSettingsEditor.qml</file>
         <file alias="TcpSettings.qml">src/ui/preferences/TcpSettings.qml</file>
         <file alias="test.qml">src/test.qml</file>
@@ -210,6 +212,7 @@
         <file alias="Video.SettingsGroup.json">src/Settings/Video.SettingsGroup.json</file>
         <file alias="RallyPoint.FactMetaData.json">src/MissionManager/RallyPoint.FactMetaData.json</file>
         <file alias="FWLandingPattern.FactMetaData.json">src/MissionManager/FWLandingPattern.FactMetaData.json</file>
+        <file alias="HorusMissionPattern.FactMetaData.json">src/MissionManager/HorusMissionPattern.FactMetaData.json</file>
         <file alias="USBBoardInfo.json">src/comm/USBBoardInfo.json</file>
         <file alias="CameraSection.FactMetaData.json">src/MissionManager/CameraSection.FactMetaData.json</file>
         <file alias="SpeedSection.FactMetaData.json">src/MissionManager/SpeedSection.FactMetaData.json</file>
