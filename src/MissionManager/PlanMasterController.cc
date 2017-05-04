@@ -352,7 +352,8 @@ void PlanMasterController::loadFromFileGeo(const QString& fileName, QGeoCoordina
             return;
         }
 
-        qDebug() << json;
+        int version;
+        QJsonObject json = jsonDoc.object();
         if (!JsonHelper::validateQGCJsonFile(json, _planFileType, _planFileVersion, _planFileVersion, version, errorString)) {
             qgcApp()->showMessage(errorMessage.arg(errorString));
             return;
