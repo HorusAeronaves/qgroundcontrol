@@ -459,14 +459,11 @@ QGCView {
                         editorMap.zoomLevel -= 0.5
                         break
                     case 6:
-                        if (!_singleComplexItem) {
-                            print("starting..")
-                            masterController.loadFromFileGeo("/horus.plan", editorMap.center)
-                            masterController.fitViewportToItems()
-                            setCurrentItem(0, true)
-                            print("done")
-                            addComplexItem(_missionController.complexMissionItemNames[2])
-                        }
+                        print("Loading horus mission")
+                        masterController.loadFromFileGeo("/horus.plan", editorMap.center)
+                        masterController.fitViewportToItems()
+                        setCurrentItem(0, true)
+                        print("horus mission done")
                         break
                     }
                 }
