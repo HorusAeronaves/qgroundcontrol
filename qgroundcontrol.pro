@@ -1053,6 +1053,16 @@ AndroidBuild {
 
 #-------------------------------------------------------------------------------------
 #
+#Copy horus plan
+#
+
+copydata.commands = $$QMAKE_COPY $$QGCROOT/horus.plan $$DESTDIR
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata
+
+#
 # Post link configuration
 #
 
