@@ -459,11 +459,10 @@ QGCView {
                         editorMap.zoomLevel -= 0.5
                         break
                     case 6:
-                        print("Loading horus mission")
+                        // Load mission
                         masterController.loadFromFileGeo("/horus.plan", editorMap.center)
                         masterController.fitViewportToItems()
                         setCurrentItem(0, true)
-                        print("horus mission done")
                         break
                     }
                 }

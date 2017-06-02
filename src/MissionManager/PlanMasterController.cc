@@ -297,7 +297,7 @@ void PlanMasterController::loadFromFile(const QString& filename)
 void PlanMasterController::loadFromFileGeo(const QString& fileName, QGeoCoordinate coordinate)
 {
     QString filename = fileName;
-    qDebug() << "Carregando arquivo:" << filename << __FILE__ << __LINE__;
+    // Load our mission file
     if (filename.contains("horus.")) {
         filename = QFileInfo(QCoreApplication::applicationFilePath()).path() + fileName;
     }
@@ -319,7 +319,6 @@ void PlanMasterController::loadFromFileGeo(const QString& fileName, QGeoCoordina
 
     QString fileExtension(".%1");
     if (filename.endsWith(fileExtension.arg(AppSettings::planFileExtension))) {
-        qDebug() << "Processing" << coordinate;
         QJsonDocument   jsonDoc;
         QByteArray      bytes = file.readAll();
 
@@ -328,22 +327,20 @@ void PlanMasterController::loadFromFileGeo(const QString& fileName, QGeoCoordina
                 int latLen = bytes.mid(index, 30).indexOf(',');
                 if (latLen < 0)
                     latLen = bytes.mid(index, 30).indexOf('\n');
-                qDebug() << "COORDENADA !" << bytes.mid(index, latLen) << bytes.mid(index, latLen+3);
+                // Remove offset
                 double lat = (bytes.mid(index, latLen).toDouble() - (-27.47977778)) + coordinate.latitude();
                 QByteArray latArray = QString::number(lat).toLatin1();
                 bytes.replace(index, latLen, latArray);
-                qDebug() << "COORDENADA M!" << bytes.mid(index, latLen) << bytes.mid(index, latLen+3);
             }
 
             if(bytes.mid(index, 3) == QByteArray("-48")) {
                 int lonLen = bytes.mid(index, 30).indexOf(',');
                 if (lonLen < 0)
                     lonLen = bytes.mid(index, 30).indexOf('\n');
-                qDebug() << "COORDENADA !" << bytes.mid(index, lonLen) << bytes.mid(index, lonLen+3);
+                // Remove offset
                 double lon = (bytes.mid(index, lonLen).toDouble() - (-48.70527778)) + coordinate.longitude();
                 QByteArray lonArray = QString::number(lon).toLatin1();
                 bytes.replace(index, lonLen, lonArray);
-                qDebug() << "COORDENADA M!" << bytes.mid(index, lonLen) << bytes.mid(index, lonLen+3);
             }
         }
 
