@@ -1056,7 +1056,7 @@ AndroidBuild {
 #Copy horus plan
 #
 
-copydata.commands = $$QMAKE_COPY $$QGCROOT/horus.plan $$DESTDIR
+copydata.commands = $$QMAKE_COPY $$shell_path($$QGCROOT/horus.plan) $$shell_path($$DESTDIR)
 first.depends = $(first) copydata
 export(first.depends)
 export(copydata.commands)
