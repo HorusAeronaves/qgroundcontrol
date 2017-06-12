@@ -322,23 +322,24 @@ void PlanMasterController::loadFromFileGeo(const QString& fileName, QGeoCoordina
         QJsonDocument   jsonDoc;
         QByteArray      bytes = file.readAll();
 
+        // Magic values calculated by polygon id in mission.plan
+        // http://www.wolframalpha.com/input/?i=centroid+polygon%5B%7B%7B-27.587160586890025,+-48.524697391584255%7D,+%7B-27.58716753613825,+-48.5203154036067%7D,+%7B-27.59136492526692,+-48.52030115316214%7D,+%7B-27.5914,+-48.5247%7D%7D%5D
         for (int index = 0; index + 3 < bytes.size(); index++) {
             if(bytes.mid(index, 3) == QByteArray("-27")) {
                 int latLen = bytes.mid(index, 30).indexOf(',');
                 if (latLen < 0)
                     latLen = bytes.mid(index, 30).indexOf('\n');
                 // Remove offset
-                double lat = (bytes.mid(index, latLen).toDouble() - (-27.47977778)) + coordinate.latitude();
+                double lat = (bytes.mid(index, latLen).toDouble() - (-27.5893)) + coordinate.latitude();
                 QByteArray latArray = QString::number(lat).toLatin1();
                 bytes.replace(index, latLen, latArray);
             }
-
             if(bytes.mid(index, 3) == QByteArray("-48")) {
                 int lonLen = bytes.mid(index, 30).indexOf(',');
                 if (lonLen < 0)
                     lonLen = bytes.mid(index, 30).indexOf('\n');
                 // Remove offset
-                double lon = (bytes.mid(index, lonLen).toDouble() - (-48.70527778)) + coordinate.longitude();
+                double lon = (bytes.mid(index, lonLen).toDouble() - (-48.5225)) + coordinate.longitude();
                 QByteArray lonArray = QString::number(lon).toLatin1();
                 bytes.replace(index, lonLen, lonArray);
             }
