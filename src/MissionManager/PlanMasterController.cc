@@ -14,7 +14,9 @@
 #include "AppSettings.h"
 #include "JsonHelper.h"
 #include "MissionManager.h"
+#include "KML.h"
 
+#include <QDomDocument>
 #include <QJsonDocument>
 #include <QFileInfo>
 
@@ -491,6 +493,30 @@ void PlanMasterController::saveToFile(const QString& filename)
     }
 }
 
+void PlanMasterController::saveToKml(const QString& filename)
+{
+    if (filename.isEmpty()) {
+        return;
+    }
+
+    QString kmlFilename = filename;
+    if (!QFileInfo(filename).fileName().contains(".")) {
+        kmlFilename += QString(".%1").arg(kmlFileExtension());
+    }
+
+    QFile file(kmlFilename);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qgcApp()->showMessage(tr("KML save error %1 : %2").arg(filename).arg(file.errorString()));
+    } else {
+        QDomDocument domDocument;
+        _missionController.convertToKMLDocument(domDocument);
+        QTextStream stream(&file);
+        stream << domDocument.toString();
+        file.close();
+    }
+}
+
 void PlanMasterController::removeAll(void)
 {
     _missionController.removeAll();
@@ -536,6 +562,11 @@ QString PlanMasterController::fileExtension(void) const
     return AppSettings::planFileExtension;
 }
 
+QString PlanMasterController::kmlFileExtension(void) const
+{
+    return AppSettings::kmlFileExtension;
+}
+
 QStringList PlanMasterController::loadNameFilters(void) const
 {
     QStringList filters;
@@ -551,6 +582,14 @@ QStringList PlanMasterController::saveNameFilters(void) const
     QStringList filters;
 
     filters << tr("Plan Files (*.%1)").arg(fileExtension()) << tr("All Files (*.*)");
+    return filters;
+}
+
+QStringList PlanMasterController::saveKmlFilters(void) const
+{
+    QStringList filters;
+
+    filters << tr("KML Files (*.%1)").arg(kmlFileExtension()) << tr("All Files (*.*)");
     return filters;
 }
 
