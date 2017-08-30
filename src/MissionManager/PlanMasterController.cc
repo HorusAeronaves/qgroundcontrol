@@ -361,6 +361,31 @@ void PlanMasterController::loadFromFileGeo(const QString& fileName, QGeoCoordina
         QJsonDocument   jsonDoc;
         QByteArray      bytes = file.readAll();
 
+        if (!JsonHelper::isJsonFile(bytes, jsonDoc, errorString)) {
+            qgcApp()->showMessage(errorMessage.arg(errorString));
+            return;
+        }
+        QJsonObject json = jsonDoc.object();
+        auto array = json["mission"].toObject()["items"].toArray();
+        float latOffset = 0;
+        float lonOffset = 0;
+        float sizeOfPoly = 0;
+        for(const auto& item : array) {
+            if(item.toObject().contains("type")) {
+                if(item.toObject()["type"].toString() == "ComplexItem") {
+                    if(item.toObject()["complexItemType"].toString() == "survey") {
+                        auto coords = item.toObject()["polygon"].toArray();
+                        sizeOfPoly = coords.size();
+                        for(const auto& coord : coords) {
+                            latOffset += coord.toArray()[0].toDouble();
+                            lonOffset += coord.toArray()[1].toDouble();
+                        }
+                    }
+                }
+            }
+        }
+        latOffset /= sizeOfPoly;
+        lonOffset /= sizeOfPoly;
         // Magic values calculated by polygon id in mission.plan
         // http://www.wolframalpha.com/input/?i=centroid+polygon%5B%7B%7B-27.587160586890025,+-48.524697391584255%7D,+%7B-27.58716753613825,+-48.5203154036067%7D,+%7B-27.59136492526692,+-48.52030115316214%7D,+%7B-27.5914,+-48.5247%7D%7D%5D
         for (int index = 0; index + 3 < bytes.size(); index++) {
@@ -369,7 +394,7 @@ void PlanMasterController::loadFromFileGeo(const QString& fileName, QGeoCoordina
                 if (latLen < 0)
                     latLen = bytes.mid(index, 30).indexOf('\n');
                 // Remove offset
-                double lat = (bytes.mid(index, latLen).toDouble() - (-27.5893)) + coordinate.latitude();
+                double lat = (bytes.mid(index, latLen).toDouble() - latOffset) + coordinate.latitude();
                 QByteArray latArray = QString::number(lat).toLatin1();
                 bytes.replace(index, latLen, latArray);
             }
@@ -378,7 +403,7 @@ void PlanMasterController::loadFromFileGeo(const QString& fileName, QGeoCoordina
                 if (lonLen < 0)
                     lonLen = bytes.mid(index, 30).indexOf('\n');
                 // Remove offset
-                double lon = (bytes.mid(index, lonLen).toDouble() - (-48.5225)) + coordinate.longitude();
+                double lon = (bytes.mid(index, lonLen).toDouble() - lonOffset) + coordinate.longitude();
                 QByteArray lonArray = QString::number(lon).toLatin1();
                 bytes.replace(index, lonLen, lonArray);
             }
@@ -390,7 +415,7 @@ void PlanMasterController::loadFromFileGeo(const QString& fileName, QGeoCoordina
         }
 
         int version;
-        QJsonObject json = jsonDoc.object();
+        json = jsonDoc.object();
         if (!JsonHelper::validateQGCJsonFile(json, _planFileType, _planFileVersion, _planFileVersion, version, errorString)) {
             qgcApp()->showMessage(errorMessage.arg(errorString));
             return;
