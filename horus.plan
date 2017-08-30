@@ -1,9 +1,6 @@
 {
     "fileType": "Plan",
     "geoFence": {
-        "polygon": [
-        ],
-        "version": 1
     },
     "groundStation": "QGroundControl",
     "mission": {
@@ -14,116 +11,78 @@
             {
                 "autoContinue": true,
                 "command": 22,
-                "coordinate": [
-                    -27.5885,
-                    -48.5194,
-                    30
-                ],
                 "doJumpId": 1,
                 "frame": 3,
                 "params": [
                     20,
                     0,
                     0,
-                    0
+                    0,
+                    -27.559,
+                    -48.5014,
+                    30
                 ],
                 "type": "SimpleItem"
             },
             {
                 "autoContinue": true,
                 "command": 31,
-                "coordinate": [
-                    -27.5903,
-                    -48.5196,
-                    150
-                ],
                 "doJumpId": 2,
                 "frame": 3,
                 "params": [
                     1,
                     60,
                     0,
-                    1
-                ],
-                "type": "SimpleItem"
-            },
-            {
-                "autoContinue": true,
-                "command": 184,
-                "coordinate": [
-                    -27.5911,
-                    -48.5224,
-                    30
-                ],
-                "doJumpId": 3,
-                "frame": 2,
-                "params": [
                     1,
-                    1900,
-                    1,
-                    3
-                ],
-                "type": "SimpleItem"
-            },
-            {
-                "autoContinue": true,
-                "command": 206,
-                "coordinate": [
-                    -27.5909,
-                    -48.5206,
-                    30
-                ],
-                "doJumpId": 4,
-                "frame": 2,
-                "params": [
-                    25,
-                    0,
-                    0,
-                    0
+                    -27.5616,
+                    -48.5012,
+                    150
                 ],
                 "type": "SimpleItem"
             },
             {
                 "camera": {
-                    "focalLength": 10.2,
-                    "groundResolution": 3.5371291373692335,
+                    "focalLength": 16,
+                    "groundResolution": 4.895833333333333,
                     "imageFrontalOverlap": 80,
                     "imageSideOverlap": 60,
-                    "name": "Canon G9 X PowerShot",
+                    "minTriggerInterval": 0,
+                    "name": "Sony a6000 16mm",
                     "orientationLandscape": true,
-                    "resolutionHeight": 3680,
-                    "resolutionWidth": 5488,
-                    "sensorHeight": 8.8,
-                    "sensorWidth": 13.2
+                    "resolutionHeight": 4000,
+                    "resolutionWidth": 6000,
+                    "sensorHeight": 15.6,
+                    "sensorWidth": 23.5
                 },
-                "cameraTriggerDistance": 26.033270451037563,
+                "cameraTriggerDistance": 39.166666666666664,
                 "complexItemType": "survey",
                 "fixedValueIsAltitude": true,
                 "grid": {
-                    "altitude": 150,
-                    "angle": 90,
+                    "altitude": 200,
+                    "angle": -154,
+                    "entryLocation": 1,
                     "relativeAltitude": true,
-                    "spacing": 77.64705882352942,
+                    "spacing": 117.5,
                     "turnAroundDistance": 30
                 },
                 "hoverAndCapture": false,
                 "manualGrid": false,
                 "polygon": [
                     [
-                        -27.587160586890025,
-                        -48.524697391584255
+                        -27.5556,
+                        -48.5128
                     ],
                     [
-                        -27.58716753613825,
-                        -48.52031540360676
+                        -27.5558,
+                        -48.5027
                     ],
                     [
-                        -27.59136492526692,
-                        -48.52030115316214
+                        -27.5653,
+                        -48.5027
                     ],
                     [
-                        -27.5914,
-                        -48.5247
+                        -27.5654,
+                        -48.5128
                     ]
                 ],
                 "refly90Degrees": false,
@@ -133,134 +92,104 @@
             {
                 "autoContinue": true,
                 "command": 16,
-                "coordinate": [
-                    -27.585979990194154,
-                    -48.520153184996815,
-                    150
-                ],
-                "doJumpId": 42,
+                "doJumpId": 76,
                 "frame": 3,
                 "params": [
                     0,
                     0,
                     0,
-                    0
+                    0,
+                    -27.5553,
+                    -48.506,
+                    90
                 ],
                 "type": "SimpleItem"
             },
             {
                 "autoContinue": true,
-                "command": 206,
-                "coordinate": [
-                    -27.5882,
-                    -48.5215,
-                    30
-                ],
-                "doJumpId": 43,
+                "command": 189,
+                "doJumpId": 77,
                 "frame": 2,
                 "params": [
-                    25,
                     0,
                     0,
-                    0
-                ],
-                "type": "SimpleItem"
-            },
-            {
-                "autoContinue": true,
-                "command": 184,
-                "coordinate": [
-                    -27.5872,
-                    -48.52,
+                    0,
+                    0,
+                    -27.5564,
+                    -48.5021,
                     30
-                ],
-                "doJumpId": 44,
-                "frame": 2,
-                "params": [
-                    1,
-                    1900,
-                    1,
-                    3
                 ],
                 "type": "SimpleItem"
             },
             {
                 "autoContinue": true,
                 "command": 31,
-                "coordinate": [
-                    -27.58480722808805,
-                    -48.51989417898557,
-                    90
-                ],
-                "doJumpId": 45,
+                "doJumpId": 78,
                 "frame": 3,
                 "params": [
                     1,
                     60,
                     0,
-                    1
+                    1,
+                    -27.5552,
+                    -48.5018,
+                    90
                 ],
                 "type": "SimpleItem"
             },
             {
                 "autoContinue": true,
                 "command": 16,
-                "coordinate": [
-                    -27.5847,
-                    -48.5189,
+                "doJumpId": 79,
+                "frame": 3,
+                "params": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    -27.5551,
+                    -48.5008,
                     50
                 ],
-                "doJumpId": 46,
-                "frame": 3,
-                "params": [
-                    0,
-                    0,
-                    0,
-                    0
-                ],
                 "type": "SimpleItem"
             },
             {
                 "autoContinue": true,
                 "command": 16,
-                "coordinate": [
-                    -27.5872,
-                    -48.5192,
-                    20
-                ],
-                "doJumpId": 47,
+                "doJumpId": 80,
                 "frame": 3,
                 "params": [
                     0,
                     0,
                     0,
-                    0
+                    0,
+                    -27.5576,
+                    -48.5011,
+                    20
                 ],
                 "type": "SimpleItem"
             },
             {
                 "autoContinue": true,
                 "command": 21,
-                "coordinate": [
-                    -27.5884,
-                    -48.5194,
-                    0
-                ],
-                "doJumpId": 48,
+                "doJumpId": 81,
                 "frame": 3,
                 "params": [
                     25,
                     0,
                     0,
+                    0,
+                    -27.5588,
+                    -48.5013,
                     0
                 ],
                 "type": "SimpleItem"
             }
         ],
         "plannedHomePosition": [
-            -27.5885,
-            -48.5194,
-            30
+            -27.5589,
+            -48.5013,
+            9
         ],
         "vehicleType": 1,
         "version": 2
