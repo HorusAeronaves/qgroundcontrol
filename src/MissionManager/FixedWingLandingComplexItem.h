@@ -71,6 +71,7 @@ public:
     QString         commandName             (void) const final { return "Landing Pattern"; }
     QString         abbreviation            (void) const final { return "L"; }
     QGeoCoordinate  coordinate              (void) const final { return _loiterCoordinate; }
+    QList<QGeoCoordinate>  coordinates      (void) const final { return QList<QGeoCoordinate>(); }
     QGeoCoordinate  exitCoordinate          (void) const final { return _landingCoordinate; }
     int             sequenceNumber          (void) const final { return _sequenceNumber; }
     double          specifiedFlightSpeed    (void) final { return std::numeric_limits<double>::quiet_NaN(); }
@@ -84,6 +85,7 @@ public:
 
     void setDirty           (bool dirty) final;
     void setCoordinate      (const QGeoCoordinate& coordinate) final { setLoiterCoordinate(coordinate); }
+    void setCoordinates     (const QList<QGeoCoordinate>& /*coordinates*/) final {}
     void setSequenceNumber  (int sequenceNumber) final;
     void save               (QJsonArray&  missionItems) final;
 
