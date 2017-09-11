@@ -201,12 +201,18 @@ int SurveyMissionItem::lastSequenceNumber(void) const
     return _sequenceNumber + _missionCommandCount;
 }
 
+void SurveyMissionItem::setCoordinates(const QList<QGeoCoordinate>& coordinates)
+{
+    if(_coordinates != coordinates) {
+        _coordinates = coordinates;
+        emit coordinatesChanged(_coordinates);
+    }
+}
+
 void SurveyMissionItem::setCoordinate(const QGeoCoordinate& coordinate)
 {
-    if (_coordinate != coordinate) {
-        _coordinate = coordinate;
-        emit coordinateChanged(_coordinate);
-    }
+    _coordinate = coordinate;
+    emit coordinateChanged(_coordinate);
 }
 
 void SurveyMissionItem::setDirty(bool dirty)
@@ -781,6 +787,14 @@ void SurveyMissionItem::_generateGrid(void)
         QGeoCoordinate coordinate = _simpleGridPoints.first().value<QGeoCoordinate>();
         coordinate.setAltitude(_gridAltitudeFact.rawValue().toDouble());
         setCoordinate(coordinate);
+        QList<QGeoCoordinate> coords;
+        coords.reserve(_simpleGridPoints.size());
+        for (const auto& coord : _simpleGridPoints) {
+            coords.append(coord.value<QGeoCoordinate>());
+            coords.last().setAltitude(_gridAltitudeFact.rawValue().toDouble());
+        }
+        setCoordinates(coords);
+
         QGeoCoordinate exitCoordinate = _simpleGridPoints.last().value<QGeoCoordinate>();
         exitCoordinate.setAltitude(_gridAltitudeFact.rawValue().toDouble());
         _setExitCoordinate(exitCoordinate);
@@ -791,9 +805,14 @@ void SurveyMissionItem::_generateGrid(void)
 
 void SurveyMissionItem::_updateCoordinateAltitude(void)
 {
+    /*
+    for(auto& coord : _coordinate) {
+        coord.setAltitude(_gridAltitudeFact.rawValue().toDouble());
+    }
+    */
     _coordinate.setAltitude(_gridAltitudeFact.rawValue().toDouble());
     _exitCoordinate.setAltitude(_gridAltitudeFact.rawValue().toDouble());
-    emit coordinateChanged(_coordinate);
+    //emit coordinateChanged(_coordinate);
     emit exitCoordinateChanged(_exitCoordinate);
     setDirty(true);
 }

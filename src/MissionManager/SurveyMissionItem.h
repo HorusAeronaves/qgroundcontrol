@@ -113,6 +113,7 @@ public:
     QString         commandName             (void) const final { return "Survey"; }
     QString         abbreviation            (void) const final { return "S"; }
     QGeoCoordinate  coordinate              (void) const final { return _coordinate; }
+    QList<QGeoCoordinate> coordinates       (void) const final { return _coordinates; }
     QGeoCoordinate  exitCoordinate          (void) const final { return _exitCoordinate; }
     int             sequenceNumber          (void) const final { return _sequenceNumber; }
     double          specifiedFlightSpeed    (void) final { return std::numeric_limits<double>::quiet_NaN(); }
@@ -126,7 +127,8 @@ public:
     bool exitCoordinateSameAsEntry          (void) const final { return false; }
 
     void setDirty           (bool dirty) final;
-    void setCoordinate      (const QGeoCoordinate& coordinate) final;
+    void setCoordinate      (const QGeoCoordinate& coordinate);
+    void setCoordinates     (const QList<QGeoCoordinate>& coordinate);
     void setSequenceNumber  (int sequenceNumber) final;
     void setTurnaroundDist  (double dist) { _turnaroundDistFact.setRawValue(dist); }
     void save               (QJsonArray&  missionItems) final;
@@ -230,6 +232,7 @@ private:
     QList<QList<QGeoCoordinate>>    _transectSegments;      ///< Internal transect segments including grid exit, turnaround and internal camera points
     QList<QList<QGeoCoordinate>>    _reflyTransectSegments; ///< Refly segments
     QGeoCoordinate                  _coordinate;
+    QList<QGeoCoordinate>           _coordinates;
     QGeoCoordinate                  _exitCoordinate;
     bool                            _cameraOrientationFixed;
     int                             _missionCommandCount;
