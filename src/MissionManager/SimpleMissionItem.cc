@@ -691,6 +691,10 @@ void SimpleMissionItem::setCoordinate(const QGeoCoordinate& coordinate)
     }
 }
 
+void SimpleMissionItem::setCoordinates(const QList<QGeoCoordinate>& /*coordinate*/)
+{
+}
+
 void SimpleMissionItem::setSequenceNumber(int sequenceNumber)
 {
     if (_missionItem.sequenceNumber() != sequenceNumber) {
