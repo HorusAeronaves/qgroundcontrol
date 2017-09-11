@@ -56,6 +56,7 @@ protected:
         exitCoordinateHasRelativeAltitudeChangedIndex,
         exitCoordinateSameAsEntryChangedIndex,
         maxSignalIndex,
+        coordinatesChangedIndex,
     };
 
     enum {
@@ -83,6 +84,7 @@ protected:
         coordinateHasRelativeAltitudeChangedMask =      1 << coordinateHasRelativeAltitudeChangedIndex,
         exitCoordinateHasRelativeAltitudeChangedMask =  1 << exitCoordinateHasRelativeAltitudeChangedIndex,
         exitCoordinateSameAsEntryChangedMask =          1 << exitCoordinateSameAsEntryChangedIndex,
+        coordinatesChangedMask =                        1 << coordinatesChangedIndex,
     };
 
     static const size_t cVisualItemSignals = maxSignalIndex;

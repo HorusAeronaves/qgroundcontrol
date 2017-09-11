@@ -49,6 +49,7 @@ void VisualMissionItemTest::init(void)
     rgVisualItemSignals[coordinateHasRelativeAltitudeChangedIndex] =        SIGNAL(coordinateHasRelativeAltitudeChanged(bool));
     rgVisualItemSignals[exitCoordinateHasRelativeAltitudeChangedIndex] =    SIGNAL(exitCoordinateHasRelativeAltitudeChanged(bool));
     rgVisualItemSignals[exitCoordinateSameAsEntryChangedIndex] =            SIGNAL(exitCoordinateSameAsEntryChanged(bool));
+    rgVisualItemSignals[coordinatesChangedIndex] =                          SIGNAL(coordinatesChanged(const QList<QGeoCoordinate>&));
 }
 
 void VisualMissionItemTest::cleanup(void)
