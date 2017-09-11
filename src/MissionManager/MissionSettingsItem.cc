@@ -228,6 +228,10 @@ void MissionSettingsItem::setHomePositionFromVehicle(const QGeoCoordinate& coord
     setCoordinate(coordinate);
 }
 
+void MissionSettingsItem::setCoordinates(const QList<QGeoCoordinate>& /*coordinates*/)
+{
+}
+
 void MissionSettingsItem::setCoordinate(const QGeoCoordinate& coordinate)
 {
     if (_plannedHomePositionCoordinate != coordinate) {

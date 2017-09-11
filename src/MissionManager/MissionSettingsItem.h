@@ -70,6 +70,7 @@ public:
     QString         commandName             (void) const final { return "Mission Start"; }
     QString         abbreviation            (void) const final { return "H"; }
     QGeoCoordinate  coordinate              (void) const final { return _plannedHomePositionCoordinate; }
+    QList<QGeoCoordinate>  coordinates      (void) const final { return QList<QGeoCoordinate>(); }
     QGeoCoordinate  exitCoordinate          (void) const final { return _plannedHomePositionCoordinate; }
     int             sequenceNumber          (void) const final { return _sequenceNumber; }
     double          specifiedGimbalYaw      (void) final;
@@ -83,6 +84,7 @@ public:
 
     void setDirty           (bool dirty) final;
     void setCoordinate      (const QGeoCoordinate& coordinate) final;
+    void setCoordinates     (const QList<QGeoCoordinate>& coordinates) final;
     void setSequenceNumber  (int sequenceNumber) final;
     void save               (QJsonArray&  missionItems) final;
 
