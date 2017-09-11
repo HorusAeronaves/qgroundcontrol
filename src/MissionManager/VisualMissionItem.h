@@ -45,6 +45,7 @@ public:
 
     Q_PROPERTY(bool             homePosition                        READ homePosition                                                   CONSTANT)                                           ///< true: This item is being used as a home position indicator
     Q_PROPERTY(QGeoCoordinate   coordinate                          READ coordinate                         WRITE setCoordinate         NOTIFY coordinateChanged)                           ///< This is the entry point for a waypoint line into the item. For a simple item it is also the location of the item
+    Q_PROPERTY(QList<QGeoCoordinate>   coordinates                  READ coordinates                        WRITE setCoordinates        NOTIFY coordinatesChanged)                           ///< This is a coordinate vector. For complex items.
     Q_PROPERTY(double           terrainAltitude                     READ terrainAltitude                                                NOTIFY terrainAltitudeChanged)            ///< The altitude of terrain at the coordinate position, NaN if not known
     Q_PROPERTY(bool             coordinateHasRelativeAltitude       READ coordinateHasRelativeAltitude                                  NOTIFY coordinateHasRelativeAltitudeChanged)        ///< true: coordinate.latitude is relative to home altitude
     Q_PROPERTY(QGeoCoordinate   exitCoordinate                      READ exitCoordinate                                                 NOTIFY exitCoordinateChanged)                       ///< This is the exit point for a waypoint line coming out of the item.
@@ -112,6 +113,7 @@ public:
     virtual QString         commandName             (void) const = 0;
     virtual QString         abbreviation            (void) const = 0;
     virtual QGeoCoordinate  coordinate              (void) const = 0;
+    virtual QList<QGeoCoordinate>  coordinates      (void) const = 0;
     virtual QGeoCoordinate  exitCoordinate          (void) const = 0;
     virtual int             sequenceNumber          (void) const = 0;
     virtual double          specifiedFlightSpeed    (void) = 0;
@@ -127,6 +129,7 @@ public:
 
     virtual void setDirty           (bool dirty) = 0;
     virtual void setCoordinate      (const QGeoCoordinate& coordinate) = 0;
+    virtual void setCoordinates     (const QList<QGeoCoordinate>& coordinate) = 0;
     virtual void setSequenceNumber  (int sequenceNumber) = 0;
     virtual int  lastSequenceNumber (void) const = 0;
 
@@ -162,6 +165,7 @@ signals:
     void commandNameChanged             (void);
     void abbreviationChanged            (void);
     void coordinateChanged              (const QGeoCoordinate& coordinate);
+    void coordinatesChanged             (const QList<QGeoCoordinate>& coordinates);
     void exitCoordinateChanged          (const QGeoCoordinate& exitCoordinate);
     void dirtyChanged                   (bool dirty);
     void distanceChanged                (double distance);

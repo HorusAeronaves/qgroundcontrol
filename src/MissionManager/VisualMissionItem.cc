@@ -8,6 +8,7 @@
  ****************************************************************************/
 
 
+#include <float.h>
 #include <QStringList>
 #include <QDebug>
 
@@ -41,8 +42,8 @@ VisualMissionItem::VisualMissionItem(Vehicle* vehicle, QObject* parent)
     _updateTerrainTimer.setInterval(500);
     _updateTerrainTimer.setSingleShot(true);
     connect(&_updateTerrainTimer, &QTimer::timeout, this, &VisualMissionItem::_reallyUpdateTerrainAltitude);
-
-    connect(this, &VisualMissionItem::coordinateChanged, this, &VisualMissionItem::_updateTerrainAltitude);
+    //connect(this, SIGNAL(coordinateChanged(QList<QGeoCoordinate>)), this, SLOT(_updateTerrainAltitude(void)));
+    connect(this, SIGNAL(coordinateChanged(QGeoCoordinate)), this, SLOT(_updateTerrainAltitude(void)));
 }
 
 VisualMissionItem::VisualMissionItem(const VisualMissionItem& other, QObject* parent)
@@ -58,7 +59,8 @@ VisualMissionItem::VisualMissionItem(const VisualMissionItem& other, QObject* pa
     , _distance                 (0.0)
 {
     *this = other;
-    connect(this, &VisualMissionItem::coordinateChanged, this, &VisualMissionItem::_updateTerrainAltitude);
+//    connect(this, SIGNAL(coordinateChanged(QList<QGeoCoordinate>)), this, SLOT(_updateTerrainAltitude(void)));
+    connect(this, SIGNAL(coordinateChanged(QGeoCoordinate)), this, SLOT(_updateTerrainAltitude(void)));
 }
 
 const VisualMissionItem& VisualMissionItem::operator=(const VisualMissionItem& other)
@@ -167,7 +169,11 @@ void VisualMissionItem::_reallyUpdateTerrainAltitude(void)
         ElevationProvider* terrain = new ElevationProvider(this);
         connect(terrain, &ElevationProvider::terrainData, this, &VisualMissionItem::_terrainDataReceived);
         QList<QGeoCoordinate> rgCoord;
-        rgCoord.append(coordinate());
+        if (coordinates().size() <= 1) {
+            rgCoord.append(coordinate());
+        } else {
+            rgCoord = coordinates();
+        }
         terrain->queryTerrainData(rgCoord);
     }
 }
@@ -175,7 +181,13 @@ void VisualMissionItem::_reallyUpdateTerrainAltitude(void)
 void VisualMissionItem::_terrainDataReceived(bool success, QList<float> altitudes)
 {
     if (success) {
-        _terrainAltitude = altitudes[0];
+        float maxAltitude = -FLT_MAX;
+        for(const auto& altitude : altitudes) {
+            if(altitude > maxAltitude) {
+                maxAltitude = altitude;
+            }
+        }
+        _terrainAltitude = maxAltitude;
         emit terrainAltitudeChanged(_terrainAltitude);
         sender()->deleteLater();
     }
