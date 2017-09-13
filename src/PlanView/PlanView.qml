@@ -406,11 +406,11 @@ QGCView {
                 color:              qgcPal.window
                 title:              qsTr("Plan")
                 z:                  QGroundControl.zOrderWidgets
-                showAlternateIcon:  [ false, false, masterController.dirty, false, false, false ]
-                rotateImage:        [ false, false, masterController.syncInProgress, false, false, false ]
-                animateImage:       [ false, false, masterController.dirty, false, false, false ]
-                buttonEnabled:      [ true, true, !masterController.syncInProgress, true, true, true ]
-                buttonVisible:      [ true, true, true, true, _showZoom, _showZoom ]
+                showAlternateIcon:  [ false, false, masterController.dirty, false, false, false, false ]
+                rotateImage:        [ false, false, masterController.syncInProgress, false, false, false, false ]
+                animateImage:       [ false, false, masterController.dirty, false, false, false, false ]
+                buttonEnabled:      [ true, true, !masterController.syncInProgress, true, true, true, true ]
+                buttonVisible:      [ true, true, true, true, _showZoom, _showZoom, true ]
                 maxHeight:          mapScale.y - toolStrip.y
 
                 property bool _showZoom: !ScreenTools.isMobile
@@ -444,6 +444,10 @@ QGCView {
                     {
                         name:               "Out",
                         iconSource:         "/qmlimages/ZoomMinus.svg"
+                    },
+                    {
+                        name:       "Horus",
+                        iconSource: "/qmlimages/horus-icon.svg",
                     }
                 ]
 
@@ -462,6 +466,12 @@ QGCView {
                         break
                     case 5:
                         editorMap.zoomLevel -= 0.5
+                        break
+                    case 6:
+                        // Load mission
+                        masterController.loadFromFileGeo("/horus.plan", editorMap.center)
+                        masterController.fitViewportToItems()
+                        setCurrentItem(0, true)
                         break
                     }
                 }

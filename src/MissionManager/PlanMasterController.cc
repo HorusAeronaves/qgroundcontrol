@@ -335,6 +335,100 @@ void PlanMasterController::loadFromFile(const QString& filename)
     }
 }
 
+void PlanMasterController::loadFromFileGeo(const QString& fileName, QGeoCoordinate coordinate)
+{
+    QString filename = fileName;
+    // Load our mission file
+    if (filename.contains("horus.")) {
+        filename = QFileInfo(QCoreApplication::applicationFilePath()).path() + fileName;
+    }
+
+    QString errorString;
+    QString errorMessage = tr("Error reading Plan file (%1). %2").arg(filename).arg("%1");
+
+    if (filename.isEmpty()) {
+        return;
+    }
+
+    QFile file(filename);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        errorString = file.errorString() + QStringLiteral(" ") + filename;
+        qDebug() << errorString << filename << __FILE__ << __LINE__;
+        return;
+    }
+
+    QString fileExtension(".%1");
+    if (filename.endsWith(fileExtension.arg(AppSettings::planFileExtension))) {
+        QJsonDocument   jsonDoc;
+        QByteArray      bytes = file.readAll();
+
+        // Magic values calculated by polygon id in mission.plan
+        // http://www.wolframalpha.com/input/?i=centroid+polygon%5B%7B%7B-27.587160586890025,+-48.524697391584255%7D,+%7B-27.58716753613825,+-48.5203154036067%7D,+%7B-27.59136492526692,+-48.52030115316214%7D,+%7B-27.5914,+-48.5247%7D%7D%5D
+        for (int index = 0; index + 3 < bytes.size(); index++) {
+            if(bytes.mid(index, 3) == QByteArray("-27")) {
+                int latLen = bytes.mid(index, 30).indexOf(',');
+                if (latLen < 0)
+                    latLen = bytes.mid(index, 30).indexOf('\n');
+                // Remove offset
+                double lat = (bytes.mid(index, latLen).toDouble() - (-27.5893)) + coordinate.latitude();
+                QByteArray latArray = QString::number(lat).toLatin1();
+                bytes.replace(index, latLen, latArray);
+            }
+            if(bytes.mid(index, 3) == QByteArray("-48")) {
+                int lonLen = bytes.mid(index, 30).indexOf(',');
+                if (lonLen < 0)
+                    lonLen = bytes.mid(index, 30).indexOf('\n');
+                // Remove offset
+                double lon = (bytes.mid(index, lonLen).toDouble() - (-48.5225)) + coordinate.longitude();
+                QByteArray lonArray = QString::number(lon).toLatin1();
+                bytes.replace(index, lonLen, lonArray);
+            }
+        }
+
+        if (!JsonHelper::isJsonFile(bytes, jsonDoc, errorString)) {
+            qgcApp()->showMessage(errorMessage.arg(errorString));
+            return;
+        }
+
+        int version;
+        QJsonObject json = jsonDoc.object();
+        if (!JsonHelper::validateQGCJsonFile(json, _planFileType, _planFileVersion, _planFileVersion, version, errorString)) {
+            qgcApp()->showMessage(errorMessage.arg(errorString));
+            return;
+        }
+
+        QList<JsonHelper::KeyValidateInfo> rgKeyInfo = {
+            { _jsonMissionObjectKey,        QJsonValue::Object, true },
+            { _jsonGeoFenceObjectKey,       QJsonValue::Object, true },
+            { _jsonRallyPointsObjectKey,    QJsonValue::Object, true },
+        };
+        if (!JsonHelper::validateKeys(json, rgKeyInfo, errorString)) {
+            qgcApp()->showMessage(errorMessage.arg(errorString));
+            return;
+        }
+
+        if (!_missionController.load(json[_jsonMissionObjectKey].toObject(), errorString) ||
+                !_geoFenceController.load(json[_jsonGeoFenceObjectKey].toObject(), errorString) ||
+                !_rallyPointController.load(json[_jsonRallyPointsObjectKey].toObject(), errorString)) {
+            qgcApp()->showMessage(errorMessage.arg(errorString));
+        }
+    } else if (filename.endsWith(fileExtension.arg(AppSettings::missionFileExtension))) {
+        if (!_missionController.loadJsonFile(file, errorString)) {
+            qgcApp()->showMessage(errorMessage.arg(errorString));
+        }
+    } else if (filename.endsWith(fileExtension.arg(AppSettings::waypointsFileExtension)) ||
+               filename.endsWith(fileExtension.arg(QStringLiteral("txt")))) {
+        if (!_missionController.loadTextFile(file, errorString)) {
+            qgcApp()->showMessage(errorMessage.arg(errorString));
+        }
+    }
+
+    if (!offline()) {
+        setDirty(true);
+    }
+}
+
 void PlanMasterController::saveToFile(const QString& filename)
 {
     if (filename.isEmpty()) {
