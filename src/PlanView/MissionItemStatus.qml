@@ -21,6 +21,7 @@ import QGroundControl.FactControls  1.0
 Rectangle {
     id:         root
     height:     ScreenTools.defaultFontPixelHeight * 7
+    width:      statusListView.count*statusListView.contentItem.children[0].width
     radius:     ScreenTools.defaultFontPixelWidth * 0.5
     color:      qgcPal.window
     opacity:    0.80
