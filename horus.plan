@@ -4,7 +4,7 @@
     },
     "groundStation": "QGroundControl",
     "mission": {
-        "cruiseSpeed": 16,
+        "cruiseSpeed": 15,
         "firmwareType": 0,
         "hoverSpeed": 4,
         "items": [
