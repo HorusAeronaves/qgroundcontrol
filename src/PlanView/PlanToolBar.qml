@@ -115,6 +115,10 @@ Rectangle {
             logo:               true
             checked:            false
             onClicked: {
+                if(uploadButton.visible && _controllerDirty) {
+                    planMasterController.upload()
+                    return
+                }
                 checked = false
                 showFlyView()
             }
