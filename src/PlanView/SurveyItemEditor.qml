@@ -653,24 +653,6 @@ Rectangle {
     }
 
     QGCColoredImage {
-        id:      windRoseArrow
-        source:  "/res/wind-rose-arrow.svg"
-        visible: windRosePie.visible
-        width:   windRosePie.width / 5
-        height:  width * 1.454
-        smooth:  true
-        color:   qgcPal.colorGrey
-        transform: Rotation {
-            origin.x: windRoseArrow.width / 2
-            origin.y: windRoseArrow.height / 2
-            axis { x: 0; y: 0; z: 1 } angle: windRosePie.angle
-        }
-        x: windRosePie.x + Math.sin(- windRosePie.angle*Math.PI/180 - Math.PI/2)*(windRosePie.width/2 - windRoseArrow.width/2) + windRosePie.width / 2 - windRoseArrow.width / 2
-        y: windRosePie.y + Math.cos(- windRosePie.angle*Math.PI/180 - Math.PI/2)*(windRosePie.width/2 - windRoseArrow.width/2) + windRosePie.height / 2 - windRoseArrow.height / 2
-        z: windRosePie.z + 1
-    }
-
-    QGCColoredImage {
         id:      windGuru
         source:  "/res/wind-guru.svg"
         visible: windRosePie.visible
