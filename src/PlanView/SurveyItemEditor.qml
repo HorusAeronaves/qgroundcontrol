@@ -66,6 +66,7 @@ Rectangle {
     }
 
     function recalcFromCameraValues() {
+        gridTypeCombo.currentIndex = missionItem.CameraIndex;
         var focalLength     = missionItem.cameraFocalLength.rawValue
         var sensorWidth     = missionItem.cameraSensorWidth.rawValue
         var sensorHeight    = missionItem.cameraSensorHeight.rawValue
@@ -212,6 +213,8 @@ Rectangle {
                 currentIndex:   -1
 
                 onActivated: {
+                    missionItem.cameraIndex = index;
+                    _cameraIndex = index
                     if (index == _gridTypeManual) {
                         missionItem.manualGrid.value = true
                         missionItem.fixedValueIsAltitude.value = true

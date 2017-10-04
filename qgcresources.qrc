@@ -327,4 +327,8 @@
         <file alias="joystickYawLeft.png">resources/calibration/joystick/mode4/joystickYawLeft.png</file>
         <file alias="joystickYawRight.png">resources/calibration/joystick/mode4/joystickYawRight.png</file>
     </qresource>
+    <qresource prefix="/res/renders">
+        <file alias="maptor.png">resources/renders/maptor.png</file>
+        <file alias="verok.png">resources/renders/verok.png</file>
+    </qresource>
 </RCC>

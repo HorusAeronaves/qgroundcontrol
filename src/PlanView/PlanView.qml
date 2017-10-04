@@ -10,6 +10,8 @@
 
 import QtQuick          2.3
 import QtQuick.Controls 1.2
+import QtQuick.Controls 2.2 as QC
+import QtQuick.Controls.Styles 1.4
 import QtQuick.Dialogs  1.2
 import QtLocation       5.3
 import QtPositioning    5.3
@@ -53,14 +55,48 @@ QGCView {
     property real   _toolbarHeight:             _qgcView.height - ScreenTools.availableHeight
     property int    _editingLayer:              _layerMission
 
+    property int    _cameraIndex:       1
+    property real   _fieldWidth:        ScreenTools.defaultFontPixelWidth * 10.5
+    property var    _cameraList:        []
+    property var    _vehicle:           QGroundControl.multiVehicleManager.activeVehicle ? QGroundControl.multiVehicleManager.activeVehicle : QGroundControl.multiVehicleManager.offlineEditingVehicle
+    property var    _vehicleCameraList: _vehicle.cameraList
+
     readonly property int       _layerMission:              1
     readonly property int       _layerGeoFence:             2
     readonly property int       _layerRallyPoints:          3
     readonly property string    _armedVehicleUploadPrompt:  qsTr("Vehicle is currently armed. Do you want to upload the mission to the vehicle?")
+    property var missionItem:      object
 
     Component.onCompleted: {
         toolbar.planMasterController =  Qt.binding(function () { return _planMasterController })
         toolbar.currentMissionItem =    Qt.binding(function () { return _currentMissionItem })
+
+        for (var i=0; i<_vehicle.cameraList.length; i++) {
+            _cameraList.push(_vehicle.cameraList[i].name)
+        }
+        gridTypeCombo.model = _cameraList
+        if (missionItem.manualGrid.value) {
+            gridTypeCombo.currentIndex = _gridTypeManual
+        } else {
+            var index = -1
+            for (index=0; index<_cameraList.length; index++) {
+                if (_cameraList[index] == missionItem.camera.value) {
+                    break;
+                }
+            }
+            missionItem.cameraOrientationFixed = false
+            if (index == _cameraList.length) {
+                gridTypeCombo.currentIndex = _gridTypeCustomCamera
+            } else {
+                gridTypeCombo.currentIndex = index
+                if (index != 1) {
+                    // Specific camera is selected
+                    var camera = _vehicleCameraList[index - _gridTypeCamera]
+                    missionItem.cameraOrientationFixed = camera.fixedOrientation
+                    missionItem.cameraMinTriggerInterval = camera.minTriggerInterval
+                }
+            }
+        }
     }
 
     function addComplexItem(complexItemName) {
@@ -149,7 +185,6 @@ QGCView {
 
         Component.onCompleted: {
             start(true /* editMode */)
-            setCurrentItem(0, true)
         }
 
         function upload() {
@@ -195,7 +230,6 @@ QGCView {
             if (_visualItems && _visualItems.count != 1) {
                 mapFitFunctions.fitMapViewportToMissionItems()
             }
-            setCurrentItem(0, true)
         }
     }
 
@@ -446,8 +480,8 @@ QGCView {
                         iconSource:         "/qmlimages/ZoomMinus.svg"
                     },
                     {
-                        name:       "Horus",
-                        iconSource: "/qmlimages/horus-icon.svg",
+                        name:               "Horus",
+                        iconSource:         "/qmlimages/horus-icon.svg",
                     }
                 ]
 
@@ -462,7 +496,6 @@ QGCView {
                         }
                         break
                     case 4:
-                        print(editorMap.center, "center map info")
                         editorMap.zoomLevel += 0.5
                         break
                     case 5:
@@ -472,12 +505,253 @@ QGCView {
                         // Load mission
                         masterController.loadFromFileGeo("/horus.plan", editorMap.center)
                         masterController.fitViewportToItems()
-                        setCurrentItem(0, true)
+
+                        setCurrentItem(3, true)
+                        missionItem = _currentMissionItem
+
+                        popup.open()
+
                         break
                     }
                 }
             }
         } // FlightMap
+
+        QC.Popup {
+            id: popup
+            modal: true
+            focus: true
+            clip: true
+            x: (parent.width - width)/2
+            y: (parent.height - height)/2
+            closePolicy: QC.Popup.CloseOnEscape | QC.Popup.CloseOnPressOutsideParent
+
+            background: Rectangle {
+                border.color: qgcPal.windowShade
+                color: qgcPal.window
+                radius: 10
+            }
+
+            GridLayout {
+                id: lay
+                columns: 3
+
+                Image {
+                    id: uavImage
+                    anchors.top:  parent.top
+                    anchors.left:   parent.left
+                    anchors.right:  parent.right
+                    Layout.preferredWidth: _qgcView._fieldWidth
+                    Layout.fillWidth: true
+                    fillMode: Image.PreserveAspectFit
+                    height: uavImage.width / 3
+                    source: "/res/renders/verok.png"
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            if(uavImage.source == "qrc:/res/renders/maptor.png") {
+                                uavImage.source = "/res/renders/verok.png"
+                            } else {
+                                uavImage.source = "/res/renders/maptor.png"
+                            }
+                        }
+                    }
+                }
+
+                QGCComboBox {
+                    id:             gridTypeCombo
+                    model:          _cameraList
+                    Layout.fillWidth: true
+                    Layout.columnSpan: 3
+                    currentIndex:   -1
+
+                    onActivated: {
+                        missionItem.manualGrid.value = false
+                        missionItem.CameraIndex = index + 2
+                        missionItem.camera.value = gridTypeCombo.textAt(index + 2)
+                        var listIndex = index - _gridTypeCamera + 2
+                        missionItem.cameraSensorWidth.rawValue          = _vehicleCameraList[listIndex].sensorWidth
+                        missionItem.cameraSensorHeight.rawValue         = _vehicleCameraList[listIndex].sensorHeight
+                        missionItem.cameraResolutionWidth.rawValue      = _vehicleCameraList[listIndex].imageWidth
+                        missionItem.cameraResolutionHeight.rawValue     = _vehicleCameraList[listIndex].imageHeight
+                        missionItem.cameraFocalLength.rawValue          = _vehicleCameraList[listIndex].focalLength
+                        missionItem.cameraOrientationLandscape.rawValue = _vehicleCameraList[listIndex].landscape ? 1 : 0
+                        missionItem.cameraOrientationFixed              = _vehicleCameraList[listIndex].fixedOrientation
+                        missionItem.cameraMinTriggerInterval            = _vehicleCameraList[listIndex].minTriggerInterval
+                    }
+                }
+
+                RowLayout {
+                    id: surveyLay
+                    anchors.left:   parent.left
+                    anchors.right:  parent.right
+                    spacing:        _margin
+                    Layout.columnSpan: 3
+
+                    Item { Layout.fillWidth: true }
+                    QGCLabel {
+                        id: frontLapLabel
+                        Layout.preferredWidth:  _qgcView._fieldWidth
+                        text:                   qsTr("Front Lap")
+                    }
+                    QGCLabel {
+                        Layout.preferredWidth:  _qgcView._fieldWidth
+                        text:                   qsTr("Side Lap")
+                    }
+                }
+
+                RowLayout {
+                    anchors.left:   parent.left
+                    anchors.right:  parent.right
+                    Layout.columnSpan: 3
+
+                    spacing:        _margin
+                    QGCLabel { text: qsTr("Overlap"); Layout.fillWidth: true }
+                    FactTextField {
+                        Layout.preferredWidth:  _qgcView._fieldWidth
+                        fact:                   missionItem.frontalOverlap
+                    }
+                    FactTextField {
+                        Layout.preferredWidth:  _qgcView._fieldWidth
+                        fact:                   missionItem.sideOverlap
+                    }
+                }
+
+                FactCheckBox {
+                    text:       qsTr("Hover and capture image")
+                    fact:       missionItem.hoverAndCapture
+                    visible:    missionItem.hoverAndCaptureAllowed
+                    Layout.columnSpan: 3
+                    onClicked: {
+                        if (checked) {
+                            missionItem.cameraTriggerInTurnaround.rawValue = false
+                        }
+                    }
+                }
+
+                FactCheckBox {
+                    text:       qsTr("Take images in turnarounds")
+                    fact:       missionItem.cameraTriggerInTurnaround
+                    enabled:    !missionItem.hoverAndCapture.rawValue
+                    Layout.columnSpan: 3
+                }
+
+                SectionHeader {
+                    id:     gridHeader
+                    text:   qsTr("Grid")
+                    Layout.columnSpan: 3
+                }
+
+                GridLayout {
+                    anchors.left:   parent.left
+                    anchors.right:  parent.right
+                    columnSpacing:  _margin
+                    rowSpacing:     _margin
+                    columns:        2
+                    visible:        gridHeader.checked
+
+                    GridLayout {
+                        anchors.left:   parent.left
+                        anchors.right:  parent.right
+                        columnSpacing:  _margin
+                        rowSpacing:     _margin
+                        columns:        2
+                        visible:        gridHeader.checked
+
+                        QGCLabel {
+                            id:                 angleText
+                            text:               qsTr("Angle")
+                            Layout.fillWidth:   true
+                        }
+
+                        ToolButton {
+                            id:                     windRoseButton
+                            anchors.verticalCenter: angleText.verticalCenter
+                            iconSource:             qgcPal.globalTheme === QGCPalette.Light ? "/res/wind-roseBlack.svg" : "/res/wind-rose.svg"
+                            visible:                _vehicle.fixedWing
+
+                            onClicked: {
+                                windRosePie.angle = Number(gridAngleText.text)
+                                var cords = windRoseButton.mapToItem(_qgcView, 0, 0)
+                                windRosePie.popup(cords.x + windRoseButton.width / 2, cords.y + windRoseButton.height / 2)
+                            }
+                        }
+                    }
+
+                    FactTextField {
+                        id:                 gridAngleText
+                        fact:               missionItem.gridAngle
+                        Layout.fillWidth:   true
+                    }
+
+                    QGCLabel { text: qsTr("Turnaround dist") }
+                    FactTextField {
+                        fact:                   missionItem.turnaroundDist
+                        Layout.fillWidth:       true
+                    }
+
+                    QGCCheckBox {
+                        text:               qsTr("Refly at 90 degree offset")
+                        checked:            missionItem.refly90Degrees
+                        onClicked:          missionItem.refly90Degrees = checked
+                        Layout.columnSpan:  2
+                    }
+
+                    QGCLabel {
+                        wrapMode:               Text.WordWrap
+                        text:                   qsTr("Select one:")
+                        Layout.preferredWidth:  _qgcView._fieldWidth
+                        Layout.columnSpan:      2
+                    }
+
+                    QGCRadioButton {
+                        id:                     fixedAltitudeRadio
+                        text:                   qsTr("Altitude")
+                        checked:                !!missionItem.fixedValueIsAltitude.value
+                        exclusiveGroup:         fixedValueGroup
+                        onClicked: {
+                            missionItem.fixedValueIsAltitude.value = 1
+                            fixedGroundResolutionRadio.checked = false
+                        }
+                    }
+
+                    FactTextField {
+                        fact:                   missionItem.gridAltitude
+                        enabled:                fixedAltitudeRadio.checked
+                        Layout.fillWidth:       true
+                    }
+
+                    QGCRadioButton {
+                        id:                     fixedGroundResolutionRadio
+                        text:                   qsTr("Ground res")
+                        checked:                !missionItem.fixedValueIsAltitude.value
+                        exclusiveGroup:         fixedValueGroup
+                        onClicked: {
+                            missionItem.fixedValueIsAltitude.value = 0
+                            fixedAltitudeRadio.checked = false
+                        }
+                    }
+
+                    FactTextField {
+                        fact:                   missionItem.groundResolution
+                        enabled:                fixedGroundResolutionRadio.checked
+                        Layout.fillWidth:       true
+                    }
+                }
+
+                Button {
+                    id: genBt
+                    text: "Generate mission"
+                    Layout.columnSpan: 3
+                    Layout.fillWidth: true
+
+                    onClicked: {
+                        popup.close()
+                    }
+                }
+            }
+        }
 
         // Right pane for mission editing controls
         Rectangle {
