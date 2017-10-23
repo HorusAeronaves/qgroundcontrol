@@ -46,10 +46,15 @@ Rectangle {
     property real   _smallValueWidth:           ScreenTools.defaultFontPixelWidth * 3
     property real   _labelToValueSpacing:       ScreenTools.defaultFontPixelWidth
     property real   _rowSpacing:                ScreenTools.isMobile ? 1 : 0
+    property real   distance:                  _statusValid ? currentMissionItem.distance : NaN
     property real   _distance:                  _statusValid ? currentMissionItem.distance : NaN
+    property real   _nextDistance:              _statusValid ? currentMissionItem.nextDistance : NaN
     property real   _altDifference:             _statusValid ? currentMissionItem.altDifference : NaN
+    property real   _nextAltDifference:         _statusValid ? currentMissionItem.nextAltDifference : NaN
     property real   _gradient:                  _statusValid && currentMissionItem.distance > 0 ? Math.atan(currentMissionItem.altDifference / currentMissionItem.distance) : NaN
+    property real   _nextGradient:              _statusValid && currentMissionItem.nextDistance > 0 ? Math.atan(currentMissionItem.nextAltDifference / currentMissionItem.nextDistance) : NaN
     property real   _gradientPercent:           isNaN(_gradient) ? NaN : _gradient * 100
+    property real   _nextGradientPercent:           isNaN(_nextGradient) ? NaN : _nextGradient * 100
     property real   _azimuth:                   _statusValid ? currentMissionItem.azimuth : NaN
     property real   _heading:                   _statusValid ? currentMissionItem.missionVehicleYaw : NaN
     property real   _missionDistance:           _missionValid ? missionDistance : NaN
@@ -62,8 +67,11 @@ Rectangle {
     property bool   _syncInProgress:            _controllerValid ? planMasterController.missionController.syncInProgress : false
 
     property string _distanceText:              isNaN(_distance) ?              "-.-" : QGroundControl.metersToAppSettingsDistanceUnits(_distance).toFixed(1) + " " + QGroundControl.appSettingsDistanceUnitsString
+    property string _nextDistanceText:          isNaN(_nextDistance) ?              "-.-" : QGroundControl.metersToAppSettingsDistanceUnits(_nextDistance).toFixed(1) + " " + QGroundControl.appSettingsDistanceUnitsString
     property string _altDifferenceText:         isNaN(_altDifference) ?         "-.-" : QGroundControl.metersToAppSettingsDistanceUnits(_altDifference).toFixed(1) + " " + QGroundControl.appSettingsDistanceUnitsString
+    property string _nextAltDifferenceText:     isNaN(_nextAltDifference) ?     "-.-" : QGroundControl.metersToAppSettingsDistanceUnits(_nextAltDifference).toFixed(1) + " " + QGroundControl.appSettingsDistanceUnitsString
     property string _gradientText:              isNaN(_gradient) ?              "-.-" : _gradientPercent.toFixed(0) + " %"
+    property string _nextGradientText:          isNaN(_nextGradient) ?          "-.-" : _nextGradientPercent.toFixed(0) + " %"
     property string _azimuthText:               isNaN(_azimuth) ?               "-.-" : Math.round(_azimuth)
     property string _headingText:               isNaN(_azimuth) ?               "-.-" : Math.round(_heading)
     property string _missionDistanceText:       isNaN(_missionDistance) ?       "-.-" : QGroundControl.metersToAppSettingsDistanceUnits(_missionDistance).toFixed(0) + " " + QGroundControl.appSettingsDistanceUnitsString
@@ -171,7 +179,7 @@ Rectangle {
 
         GridLayout {
             anchors.verticalCenter: parent.verticalCenter
-            columns:                8
+            columns:                14
             rowSpacing:             _rowSpacing
             columnSpacing:          _labelToValueSpacing
             Layout.alignment:       Qt.AlignHCenter
@@ -181,6 +189,8 @@ Rectangle {
                 Layout.columnSpan:  parent.columns
                 font.pointSize:     ScreenTools.smallFontPointSize
             }
+
+            QGCLabel { text: qsTr("Prev."); font.pointSize: _dataFontSize; }
 
             QGCLabel { text: qsTr("Alt diff:"); font.pointSize: _dataFontSize; }
             QGCLabel {
@@ -222,6 +232,43 @@ Rectangle {
                 font.pointSize:         _dataFontSize
                 Layout.minimumWidth:    _smallValueWidth
             }
+
+            QGCLabel { text: qsTr("Next."); font.pointSize: _dataFontSize; }
+
+            QGCLabel { text: qsTr("Alt diff:"); font.pointSize: _dataFontSize; }
+            QGCLabel {
+                text:                   _nextAltDifferenceText
+                font.pointSize:         _dataFontSize
+                Layout.minimumWidth:    _mediumValueWidth
+            }
+
+            Item { width: 1; height: 1 }
+
+            Item { width: 1; height: 1 }
+
+            Item { width: 1; height: 1 }
+
+            Item { width: 1; height: 1 }
+
+            QGCLabel { text: qsTr("Distance:"); font.pointSize: _dataFontSize; }
+            QGCLabel {
+                text:                   _nextDistanceText
+                font.pointSize:         _dataFontSize
+                Layout.minimumWidth:    _largeValueWidth
+            }
+
+            QGCLabel { text: qsTr("Gradient:"); font.pointSize: _dataFontSize; }
+            QGCLabel {
+                text:                   _nextGradientText
+                font.pointSize:         _dataFontSize
+                Layout.minimumWidth:    _mediumValueWidth
+            }
+
+            Item { width: 1; height: 1 }
+
+            Item { width: 1; height: 1 }
+
+            Item { width: 1; height: 1 }
         }
 
         GridLayout {

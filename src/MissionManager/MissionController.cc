@@ -7,7 +7,7 @@
  *
  ****************************************************************************/
 
-
+#include <iostream>
 #include "MissionCommandUIInfo.h"
 #include "MissionController.h"
 #include "MultiVehicleManager.h"
@@ -337,9 +337,9 @@ int MissionController::insertSimpleMissionItem(QGeoCoordinate coordinate, int i)
     }
     newItem->setDefaultsForCommand();
     if ((MAV_CMD)newItem->command() == MAV_CMD_NAV_WAYPOINT) {
+
         double      prevAltitude;
         MAV_FRAME   prevFrame;
-
         if (_findPreviousAltitude(i, &prevAltitude, &prevFrame)) {
             newItem->missionItem().setFrame(prevFrame);
             newItem->missionItem().setParam7(prevAltitude);
@@ -931,6 +931,40 @@ void MissionController::_calcPrevWaypointValues(double homeAlt, VisualMissionIte
     }
 }
 
+void MissionController::_calcNextWaypointValues(double homeAlt, VisualMissionItem* currentItem, VisualMissionItem* nextItem, double* azimuth, double* distance, double* altDifference)
+{
+    if(!nextItem) {
+        azimuth = 0;
+        distance = 0;
+        altDifference = 0;
+        return;
+    }
+
+    QGeoCoordinate  currentCoord =  currentItem->coordinate();
+    QGeoCoordinate  nextCoord =     nextItem->exitCoordinate();
+    bool            distanceOk =    false;
+
+    // Convert to fixed altitudes
+
+    distanceOk = true;
+    if (currentItem != _settingsItem && currentItem->coordinateHasRelativeAltitude()) {
+        currentCoord.setAltitude(homeAlt + currentCoord.altitude());
+    }
+    if (nextItem != _settingsItem && nextItem->exitCoordinateHasRelativeAltitude()) {
+        nextCoord.setAltitude(homeAlt + nextCoord.altitude());
+    }
+
+    if (distanceOk) {
+        *altDifference = currentCoord.altitude() - nextCoord.altitude();
+        *distance = nextCoord.distanceTo(currentCoord);
+        *azimuth = currentCoord.azimuthTo(nextCoord);
+    } else {
+        *altDifference = 0.0;
+        *azimuth = 0.0;
+        *distance = 0.0;
+    }
+}
+
 double MissionController::_calcDistanceToHome(VisualMissionItem* currentItem, VisualMissionItem* homeItem)
 {
     QGeoCoordinate  currentCoord =  currentItem->coordinate();
@@ -1130,8 +1164,12 @@ void MissionController::_recalcMissionFlightStatus()
 
     // No values for first item
     lastCoordinateItem->setAltDifference(0.0);
+    lastCoordinateItem->setNextAltDifference(0.0);
     lastCoordinateItem->setAzimuth(0.0);
+    lastCoordinateItem->setNextAzimuth(0.0);
     lastCoordinateItem->setDistance(0.0);
+    lastCoordinateItem->setNextDistance(0.0);
+    lastCoordinateItem->setNextMissionVehicleYaw(0.0);
 
     double minAltSeen = 0.0;
     double maxAltSeen = 0.0;
@@ -1156,7 +1194,12 @@ void MissionController::_recalcMissionFlightStatus()
     for (int i=0; i<_visualItems->count(); i++) {
         VisualMissionItem* item = qobject_cast<VisualMissionItem*>(_visualItems->get(i));
         SimpleMissionItem* simpleItem = qobject_cast<SimpleMissionItem*>(item);
+        VisualMissionItem* nextItem(nullptr);
         ComplexMissionItem* complexItem = qobject_cast<ComplexMissionItem*>(item);
+
+        if(i + 1 < _visualItems->count()) {
+            nextItem = qobject_cast<VisualMissionItem*>(_visualItems->get(i + 1));
+        }
 
         // Assume the worst
         item->setAzimuth(0.0);
@@ -1260,12 +1303,16 @@ void MissionController::_recalcMissionFlightStatus()
                 firstCoordinateItem = false;
                 if (lastCoordinateItem != _settingsItem || linkStartToHome) {
                     // This is a subsequent waypoint or we are forcing the first waypoint back to home
-                    double azimuth, distance, altDifference;
+                    double azimuth, distance, altDifference, nextAzimuth, nextDistance, nextAltDifference;
 
                     _calcPrevWaypointValues(homePositionAltitude, item, lastCoordinateItem, &azimuth, &distance, &altDifference);
+                    _calcNextWaypointValues(homePositionAltitude, item, nextItem, &nextAzimuth, &nextDistance, &nextAltDifference);
                     item->setAltDifference(altDifference);
+                    item->setNextAltDifference(nextAltDifference);
                     item->setAzimuth(azimuth);
+                    item->setNextAzimuth(nextAzimuth);
                     item->setDistance(distance);
+                    item->setNextDistance(nextDistance);
 
                     _missionFlightStatus.maxTelemetryDistance = qMax(_missionFlightStatus.maxTelemetryDistance, _calcDistanceToHome(item, _settingsItem));
 
@@ -1588,6 +1635,41 @@ bool MissionController::_findPreviousAltitude(int newIndex, double* prevAltitude
     if (found) {
         *prevAltitude = foundAltitude;
         *prevFrame = foundFrame;
+    }
+
+    return found;
+}
+
+bool MissionController::_findNextAltitude(int newIndex, double* nextAltitude, MAV_FRAME* nextFrame)
+{
+    bool        found = false;
+    double      foundAltitude;
+    MAV_FRAME   foundFrame;
+
+    if (newIndex >= _visualItems->count()) {
+        return false;
+    }
+    newIndex++;
+
+    for (int i=newIndex; i>0; i--) {
+        VisualMissionItem* visualItem = qobject_cast<VisualMissionItem*>(_visualItems->get(i));
+
+        if (visualItem->specifiesCoordinate() && !visualItem->isStandaloneCoordinate()) {
+            if (visualItem->isSimpleItem()) {
+                SimpleMissionItem* simpleItem = qobject_cast<SimpleMissionItem*>(visualItem);
+                if ((MAV_CMD)simpleItem->command() == MAV_CMD_NAV_WAYPOINT) {
+                    foundAltitude = simpleItem->exitCoordinate().altitude();
+                    foundFrame = simpleItem->missionItem().frame();
+                    found = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (found) {
+        *nextAltitude = foundAltitude;
+        *nextFrame = foundFrame;
     }
 
     return found;

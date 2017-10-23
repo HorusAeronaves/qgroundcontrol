@@ -29,12 +29,16 @@ VisualMissionItem::VisualMissionItem(Vehicle* vehicle, QObject* parent)
     , _homePositionSpecialCase  (false)
     , _terrainAltitude          (qQNaN())
     , _altDifference            (0.0)
+    , _nextAltDifference        (0.0)
     , _altPercent               (0.0)
     , _terrainPercent           (qQNaN())
     , _azimuth                  (0.0)
+    , _nextAzimuth              (0.0)
     , _distance                 (0.0)
+    , _nextDistance             (0.0)
     , _missionGimbalYaw         (qQNaN())
     , _missionVehicleYaw        (qQNaN())
+    , _nextMissionVehicleYaw    (qQNaN())
     , _lastLatTerrainQuery      (0)
     , _lastLonTerrainQuery      (0)
 {
@@ -98,11 +102,28 @@ void VisualMissionItem::setDistance(double distance)
     }
 }
 
+void VisualMissionItem::setNextDistance(double nextDistance)
+{
+    if (!qFuzzyCompare(_nextDistance, nextDistance)) {
+        _nextDistance = nextDistance;
+        emit nextDistanceChanged(_nextDistance);
+    }
+}
+
+
 void VisualMissionItem::setAltDifference(double altDifference)
 {
     if (!qFuzzyCompare(_altDifference, altDifference)) {
         _altDifference = altDifference;
         emit altDifferenceChanged(_altDifference);
+    }
+}
+
+void VisualMissionItem::setNextAltDifference(double altDifference)
+{
+    if (!qFuzzyCompare(_nextAltDifference, altDifference)) {
+        _nextAltDifference = altDifference;
+        emit nextAltDifferenceChanged(_altDifference);
     }
 }
 
@@ -130,6 +151,15 @@ void VisualMissionItem::setAzimuth(double azimuth)
     }
 }
 
+void VisualMissionItem::setNextAzimuth(double nextAzimuth)
+{
+    if (!qFuzzyCompare(_nextAzimuth, nextAzimuth)) {
+        _nextAzimuth = nextAzimuth;
+        emit nextAzimuthChanged(_nextAzimuth);
+    }
+}
+
+
 void VisualMissionItem::setMissionFlightStatus(MissionController::MissionFlightStatus_t& missionFlightStatus)
 {
     _missionFlightStatus = missionFlightStatus;
@@ -147,6 +177,14 @@ void VisualMissionItem::setMissionVehicleYaw(double vehicleYaw)
     if (!qFuzzyCompare(_missionVehicleYaw, vehicleYaw)) {
         _missionVehicleYaw = vehicleYaw;
         emit missionVehicleYawChanged(_missionVehicleYaw);
+    }
+}
+
+void VisualMissionItem::setNextMissionVehicleYaw(double nextVehicleYaw)
+{
+    if (!qFuzzyCompare(_nextMissionVehicleYaw, nextVehicleYaw)) {
+        _nextMissionVehicleYaw = nextVehicleYaw;
+        emit nextMissionVehicleYawChanged(_nextMissionVehicleYaw);
     }
 }
 
