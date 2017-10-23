@@ -178,7 +178,7 @@ Rectangle {
 
             QGCLabel {
                 text:               qsTr("Selected Waypoint")
-                Layout.columnSpan:  8
+                Layout.columnSpan:  parent.columns
                 font.pointSize:     ScreenTools.smallFontPointSize
             }
 
