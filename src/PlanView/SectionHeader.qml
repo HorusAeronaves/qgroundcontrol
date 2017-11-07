@@ -11,6 +11,7 @@ FocusScope {
     anchors.left:   parent.left
     anchors.right:  parent.right
     height:         column.height
+    enabled:        true
 
     property alias          text:           label.text
     property bool           checked:        true
@@ -30,6 +31,9 @@ FocusScope {
         anchors.fill: parent
 
         onClicked: {
+            if (_root.enabled == false) {
+                return
+            }
             _root.focus = true
             checked = !checked
         }

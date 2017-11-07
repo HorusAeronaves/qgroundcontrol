@@ -642,6 +642,7 @@ QGCView {
                     id:     gridHeader
                     text:   qsTr("Grid")
                     Layout.columnSpan: 3
+                    enabled: false
                 }
 
                 GridLayout {
