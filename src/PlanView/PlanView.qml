@@ -1102,4 +1102,120 @@ QGCView {
             }
         }
     }
+
+    QC.Popup {
+        id:          windRosePie
+        height:      2.6*windRoseButton.height
+        width:       2.6*windRoseButton.width
+        visible:     false
+        focus:       true
+        z:           windRoseButton.z + 1
+        background: Rectangle {
+            color: "transparent"
+            border.color: "transparent"
+        }
+
+        property string colorCircle: qgcPal.windowShade
+        property string colorBackground: qgcPal.colorGrey
+        property real lineWidth: windRoseButton.width / 3
+        property real angle: Number(gridAngleText.text)
+
+        Canvas {
+            id:             windRoseCanvas
+            z:              windRosePie.z
+            anchors.fill:   parent
+
+            onPaint: {
+                var ctx = getContext("2d")
+                var x = width / 2
+                var y = height / 2
+                var angleWidth = 0.03 * Math.PI
+                var start = windRosePie.angle*Math.PI/180 - angleWidth
+                var end = windRosePie.angle*Math.PI/180 + angleWidth
+                ctx.reset()
+
+                ctx.beginPath()
+                ctx.arc(x, y, (width / 3) - windRosePie.lineWidth / 2, 0, 2*Math.PI, false)
+                ctx.lineWidth = windRosePie.lineWidth
+                ctx.strokeStyle = windRosePie.colorBackground
+                ctx.stroke()
+
+                ctx.beginPath()
+                ctx.arc(x, y, (width / 3) - windRosePie.lineWidth / 2, start, end, false)
+                ctx.lineWidth = windRosePie.lineWidth
+                ctx.strokeStyle = windRosePie.colorCircle
+                ctx.stroke()
+            }
+        }
+
+        onFocusChanged: {
+            visible = focus
+        }
+
+        function popup(x, y) {
+            if (x !== undefined)
+                windRosePie.x = x - windRosePie.width / 2
+            if (y !== undefined)
+                windRosePie.y = y - windRosePie.height / 2
+
+            windRosePie.visible = true
+            windRosePie.focus = true
+            missionItemEditorListView.interactive = false
+        }
+
+        MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            onClicked: {
+                windRosePie.visible = false
+                missionItemEditorListView.interactive = true
+            }
+            onPositionChanged: {
+                var point = Qt.point(mouseX - parent.width / 2, mouseY - parent.height / 2)
+                var angle = Math.round(Math.atan2(point.y, point.x) * 180 / Math.PI)
+                windRoseCanvas.requestPaint()
+                windRosePie.angle = angle
+                gridAngleText.text = angle
+                gridAngleText.editingFinished()
+
+                if(angle > -135 && angle <= -45) {
+                    gridAngleBox.activated(2) // or 3
+                } else if(angle > -45 && angle <= 45) {
+                    gridAngleBox.activated(2) // or 0
+                } else if(angle > 45 && angle <= 135) {
+                    gridAngleBox.activated(1) // or 0
+                } else if(angle > 135 || angle <= -135) {
+                    gridAngleBox.activated(1) // or 3
+                }
+            }
+        }
+
+        QGCColoredImage {
+            id:      windGuru
+            source:  "/res/wind-guru.svg"
+            visible: windRosePie.visible
+            width:   windRosePie.width / 3
+            height:  width * 4.28e-1
+            smooth:  true
+            color:   qgcPal.colorGrey
+            transform: Rotation {
+                origin.x: windGuru.width / 2
+                origin.y: windGuru.height / 2
+                axis { x: 0; y: 0; z: 1 } angle: windRosePie.angle + 180
+            }
+            x: Math.sin(- windRosePie.angle*Math.PI/180 - 3*Math.PI/2)*(windRosePie.width/2) + windRosePie.width / 2 - windGuru.width / 2 - windRoseButton.width / 4
+            y: Math.cos(- windRosePie.angle*Math.PI/180 - 3*Math.PI/2)*(windRosePie.height/2) + windRosePie.height / 2 - windGuru.height / 2 - windRoseButton.height / 4
+            z: windRosePie.z + 1
+        }
+    }
+
+    FactComboBox {
+        id: gridAngleBox
+        fact:                   missionItem.gridEntryLocation
+        visible:                !windRoseButton.visible
+        indexModel:             false
+        Layout.fillWidth:       true
+    }
 } // QGCVIew
