@@ -56,6 +56,7 @@ QGCView {
     property int    _editingLayer:              _layerMission
 
     property int    _cameraIndex:       1
+    property int    _gridTypeCamera:    1
     property real   _fieldWidth:        ScreenTools.defaultFontPixelWidth * 10.5
     property var    _cameraList:        []
     property var    _vehicle:           QGroundControl.multiVehicleManager.activeVehicle ? QGroundControl.multiVehicleManager.activeVehicle : QGroundControl.multiVehicleManager.offlineEditingVehicle
