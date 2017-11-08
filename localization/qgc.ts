@@ -2726,6 +2726,11 @@ propellers on the green thrusters and counter-clockwise propellers on the blue t
         <source>Sony a6000 16mm</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/FirmwarePlugin/FirmwarePlugin.cc" line="407"/>
+        <source>Sony RX100 II 28mm</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FirmwareUpgrade</name>
