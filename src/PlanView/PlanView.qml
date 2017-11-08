@@ -789,14 +789,15 @@ QGCView {
                         point2PointFromDisntaceAndAzimuth(_visualItems.get(3).coordinate, _visualItems.get(2).coordinate, 500, angle)
                         point2PointFromDisntaceAndAzimuth(_visualItems.get(2).coordinate, _visualItems.get(1).coordinate, 500, angle)
                         point2PointFromDisntaceAndAzimuth(_visualItems.get(1).coordinate, _visualItems.get(0).coordinate, 0, 0)
-                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 6).exitCoordinate, _visualItems.get(lastIndex - 5).coordinate, 500, angle)
-                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 5).coordinate, _visualItems.get(lastIndex - 3).coordinate, 500, angle)
-                        var altDiff = Math.abs(_visualItems.get(lastIndex - 3).coordinate.altitude - _visualItems.get(lastIndex - 2).coordinate.altitude)*10
-                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 3).coordinate, _visualItems.get(lastIndex - 2).coordinate, altDiff, angle)
-                        altDiff = Math.abs(_visualItems.get(lastIndex - 2).coordinate.altitude - _visualItems.get(lastIndex - 1).coordinate.altitude)*10
-                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 2).coordinate, _visualItems.get(lastIndex - 1).coordinate, altDiff, angle)
-                        altDiff = Math.abs(_visualItems.get(lastIndex - 1).coordinate.altitude - _visualItems.get(lastIndex).coordinate.altitude)*10
-                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 1).coordinate, _visualItems.get(lastIndex).coordinate, altDiff, angle)
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 6).exitCoordinate, _visualItems.get(lastIndex - 5).coordinate, 500, 90)
+
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(1).coordinate, _visualItems.get(lastIndex).coordinate, 10, angle)
+                        var altDiff = Math.abs(_visualItems.get(lastIndex - 1).coordinate.altitude - _visualItems.get(lastIndex).coordinate.altitude)*10
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex).coordinate, _visualItems.get(lastIndex - 1).coordinate, altDiff, angle)
+                        altDiff = Math.abs(_visualItems.get(lastIndex - 1).coordinate.altitude - _visualItems.get(lastIndex - 2).coordinate.altitude)*10
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 1).coordinate, _visualItems.get(lastIndex - 2).coordinate, altDiff, angle)
+                        altDiff = Math.abs(_visualItems.get(lastIndex - 2).coordinate.altitude - _visualItems.get(lastIndex - 3).coordinate.altitude)*10
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 2).coordinate, _visualItems.get(lastIndex - 3).coordinate, altDiff, angle)
 
                         popup.close()
                     }
