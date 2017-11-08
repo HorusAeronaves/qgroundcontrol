@@ -945,7 +945,10 @@ void MissionController::_calcNextWaypointValues(double homeAlt, VisualMissionIte
     }
 
     QGeoCoordinate  currentCoord =  currentItem->coordinate();
-    QGeoCoordinate  nextCoord =     nextItem->exitCoordinate();
+    QGeoCoordinate  nextCoord;
+    nextCoord = nextItem->isSimpleItem() ? \
+        nextItem->exitCoordinate() : nextCoord = nextItem->coordinate();
+
     bool            distanceOk =    false;
 
     // Convert to fixed altitudes
