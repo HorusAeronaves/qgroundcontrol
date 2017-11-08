@@ -26,6 +26,7 @@ import QGroundControl.FactControls  1.0
 import QGroundControl.Palette       1.0
 import QGroundControl.Mavlink       1.0
 import QGroundControl.Controllers   1.0
+import QGroundControl.Vehicle       1.0
 
 /// Mission Editor
 
@@ -60,7 +61,7 @@ QGCView {
     property real   _fieldWidth:        ScreenTools.defaultFontPixelWidth * 10.5
     property var    _cameraList:        []
     property var    _vehicle:           QGroundControl.multiVehicleManager.activeVehicle ? QGroundControl.multiVehicleManager.activeVehicle : QGroundControl.multiVehicleManager.offlineEditingVehicle
-    property var    _vehicleCameraList: _vehicle.cameraList
+    property var    _vehicleCameraList: _vehicle ? _vehicle.staticCameraList : []
 
     readonly property int       _layerMission:              1
     readonly property int       _layerGeoFence:             2
@@ -72,8 +73,8 @@ QGCView {
         toolbar.planMasterController =  Qt.binding(function () { return _planMasterController })
         toolbar.currentMissionItem =    Qt.binding(function () { return _currentMissionItem })
 
-        for (var i=0; i<_vehicle.cameraList.length; i++) {
-            _cameraList.push(_vehicle.cameraList[i].name)
+        for (var i=0; i<_vehicleCameraList.length; i++) {
+            _cameraList.push(_vehicleCameraList[i].name)
         }
         gridTypeCombo.model = _cameraList
         if (missionItem.manualGrid.value) {
