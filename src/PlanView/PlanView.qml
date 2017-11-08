@@ -103,6 +103,36 @@ QGCView {
         }
     }
 
+
+    // Converts from degrees to radians.
+    function rad(degrees) {
+        return degrees * Math.PI / 180;
+    }
+
+    // Converts from radians to degrees.
+    function deg(radians) {
+        return radians * 180 / Math.PI;
+    }
+
+    //Based on QGeoCoordinate
+    function point2PointFromDisntaceAndAzimuth(coord, coord2, distance, azimuth) {
+        var latRad = rad(coord.latitude)
+        var longRad = rad(coord.longitude)
+        var cosLatRad = Math.cos(latRad)
+        var sinLatRad = Math.sin(latRad)
+        var azimuthRad = rad(azimuth)
+
+        var ratio = (distance / (6371.0072 * 1000.0))
+        var cosRatio = Math.cos(ratio)
+        var sinRatio = Math.sin(ratio)
+
+        var resultLatRad = Math.asin(sinLatRad * cosRatio + cosLatRad * sinRatio * Math.cos(azimuthRad))
+        var resultLonRad = longRad + Math.atan2(Math.sin(azimuthRad) * sinRatio * cosLatRad, cosRatio - sinLatRad * Math.sin(resultLatRad))
+        coord2.latitude = deg(resultLatRad)
+        coord2.longitude = deg(resultLonRad)
+        return coord2
+    }
+
     function getImagePathFromDrone(name) {
         return "/res/renders/" + name + ".png"
     }
@@ -752,6 +782,22 @@ QGCView {
                     Layout.fillWidth: true
 
                     onClicked: {
+                        var loiterInAlt = droneName == "verok" ? 150 : 60
+                        var lastIndex = _visualItems.count - 1
+                        var angle = windRosePie.angle - 90
+                        _visualItems.get(2).coordinate.altitude = loiterInAlt
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(3).coordinate, _visualItems.get(2).coordinate, 500, angle)
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(2).coordinate, _visualItems.get(1).coordinate, 500, angle)
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(1).coordinate, _visualItems.get(0).coordinate, 0, 0)
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 6).exitCoordinate, _visualItems.get(lastIndex - 5).coordinate, 500, angle)
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 5).coordinate, _visualItems.get(lastIndex - 3).coordinate, 500, angle)
+                        var altDiff = Math.abs(_visualItems.get(lastIndex - 3).coordinate.altitude - _visualItems.get(lastIndex - 2).coordinate.altitude)*10
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 3).coordinate, _visualItems.get(lastIndex - 2).coordinate, altDiff, angle)
+                        altDiff = Math.abs(_visualItems.get(lastIndex - 2).coordinate.altitude - _visualItems.get(lastIndex - 1).coordinate.altitude)*10
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 2).coordinate, _visualItems.get(lastIndex - 1).coordinate, altDiff, angle)
+                        altDiff = Math.abs(_visualItems.get(lastIndex - 1).coordinate.altitude - _visualItems.get(lastIndex).coordinate.altitude)*10
+                        point2PointFromDisntaceAndAzimuth(_visualItems.get(lastIndex - 1).coordinate, _visualItems.get(lastIndex).coordinate, altDiff, angle)
+
                         popup.close()
                     }
                 }
