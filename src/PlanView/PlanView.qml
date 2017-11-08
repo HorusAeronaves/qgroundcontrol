@@ -69,6 +69,8 @@ QGCView {
     readonly property string    _armedVehicleUploadPrompt:  qsTr("Vehicle is currently armed. Do you want to upload the mission to the vehicle?")
     property var missionItem:      object
 
+    property var droneName:  "verok"
+
     Component.onCompleted: {
         toolbar.planMasterController =  Qt.binding(function () { return _planMasterController })
         toolbar.currentMissionItem =    Qt.binding(function () { return _currentMissionItem })
@@ -99,6 +101,10 @@ QGCView {
                 }
             }
         }
+    }
+
+    function getImagePathFromDrone(name) {
+        return "/res/renders/" + name + ".png"
     }
 
     function addComplexItem(complexItemName) {
@@ -547,16 +553,12 @@ QGCView {
                     Layout.fillWidth: true
                     fillMode: Image.PreserveAspectFit
                     height: uavImage.width / 3
-                    source: "/res/renders/verok.png"
+                    source: getImagePathFromDrone(droneName)
 
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            if(uavImage.source == "qrc:/res/renders/maptor.png") {
-                                uavImage.source = "/res/renders/verok.png"
-                            } else {
-                                uavImage.source = "/res/renders/maptor.png"
-                            }
+                            droneName  = droneName == "verok" ? "maptor" : "verok"
                         }
                     }
                 }
