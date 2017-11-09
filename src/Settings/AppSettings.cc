@@ -33,6 +33,7 @@ const char* AppSettings::indoorPaletteName =                            "StyleIs
 const char* AppSettings::showLargeCompassName =                         "ShowLargeCompass";
 const char* AppSettings::savePathName =                                 "SavePath";
 const char* AppSettings::droneNameSettingsName =                        "DroneName";
+const char* AppSettings::cameraIDSettingsName =                         "CameraID";
 const char* AppSettings::autoLoadMissionsName =                         "AutoLoadMissions";
 const char* AppSettings::mapboxTokenName =                              "MapboxToken";
 const char* AppSettings::esriTokenName =                                "EsriToken";
@@ -73,6 +74,7 @@ AppSettings::AppSettings(QObject* parent)
     , _showLargeCompassFact(NULL)
     , _savePathFact(NULL)
     , _droneNameFact(NULL)
+    , _cameraIDFact(NULL)
     , _autoLoadMissionsFact(NULL)
     , _mapboxTokenFact(NULL)
     , _esriTokenFact(NULL)
@@ -280,6 +282,23 @@ Fact* AppSettings::droneNameFact(void)
 QString AppSettings::droneName(void)
 {
     return droneNameFact()->rawValue().toString();
+}
+
+
+Fact* AppSettings::cameraIDFact(void)
+{
+    if (!_cameraIDFact) {
+        _cameraIDFact = _createSettingsFact(cameraIDSettingsName);
+    }
+
+    return _cameraIDFact;
+}
+
+int AppSettings::cameraID(void)
+{
+    qDebug() << __FUNCTION__ <<  cameraIDFact()->rawValue();
+    return cameraIDFact()->rawValue().toInt();
+
 }
 
 QString AppSettings::missionSavePath(void)

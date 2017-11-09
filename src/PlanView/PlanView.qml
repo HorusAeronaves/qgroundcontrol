@@ -599,11 +599,12 @@ QGCView {
                     model:          _cameraList
                     Layout.fillWidth: true
                     Layout.columnSpan: 3
-                    currentIndex:   -1
+                    currentIndex:   QGroundControl.settingsManager.appSettings.cameraIDFact.rawValue - 2
 
                     onActivated: {
                         missionItem.manualGrid.value = false
                         missionItem.CameraIndex = index + 2
+                        QGroundControl.settingsManager.appSettings.cameraIDFact.rawValue = missionItem.CameraIndex
                         missionItem.camera.value = gridTypeCombo.textAt(index + 2)
                         var listIndex = index - _gridTypeCamera + 2
                         missionItem.cameraSensorWidth.rawValue          = _vehicleCameraList[listIndex].sensorWidth

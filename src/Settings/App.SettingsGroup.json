@@ -151,6 +151,13 @@
     "defaultValue":     "verok"
 },
 {
+    "name":             "CameraID",
+    "shortDescription": "Camera Index",
+    "longDescription":  "User camera index",
+    "type":             "uint32",
+    "defaultValue":     2
+},
+{
     "name":             "UserBrandImageIndoor",
     "shortDescription": "User-selected brand image",
     "longDescription":  "Location in file system of user-selected brand image (indoor)",
