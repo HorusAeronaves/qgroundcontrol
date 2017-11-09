@@ -144,6 +144,13 @@
     "defaultValue":     ""
 },
 {
+    "name":             "DroneName",
+    "shortDescription": "Drone name",
+    "longDescription":  "Name of drone used",
+    "type":             "string",
+    "defaultValue":     "verok"
+},
+{
     "name":             "UserBrandImageIndoor",
     "shortDescription": "User-selected brand image",
     "longDescription":  "Location in file system of user-selected brand image (indoor)",

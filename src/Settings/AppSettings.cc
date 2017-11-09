@@ -32,6 +32,7 @@ const char* AppSettings::appFontPointSizeName =                         "BaseDev
 const char* AppSettings::indoorPaletteName =                            "StyleIsDark";
 const char* AppSettings::showLargeCompassName =                         "ShowLargeCompass";
 const char* AppSettings::savePathName =                                 "SavePath";
+const char* AppSettings::droneNameSettingsName =                        "DroneName";
 const char* AppSettings::autoLoadMissionsName =                         "AutoLoadMissions";
 const char* AppSettings::mapboxTokenName =                              "MapboxToken";
 const char* AppSettings::esriTokenName =                                "EsriToken";
@@ -264,6 +265,20 @@ Fact* AppSettings::savePath(void)
     }
 
     return _savePathFact;
+}
+
+Fact* AppSettings::droneNameFact(void)
+{
+    if (!_droneNameFact) {
+        _droneNameFact = _createSettingsFact(droneNameSettingsName);
+    }
+
+    return _droneNameFact;
+}
+
+QString AppSettings::droneName(void)
+{
+    return droneNameFact()->rawValue().toString();
 }
 
 QString AppSettings::missionSavePath(void)

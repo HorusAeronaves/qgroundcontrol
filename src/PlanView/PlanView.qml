@@ -69,7 +69,7 @@ QGCView {
     readonly property string    _armedVehicleUploadPrompt:  qsTr("Vehicle is currently armed. Do you want to upload the mission to the vehicle?")
     property var missionItem:      object
 
-    property var droneName:  "verok"
+    property var droneName:     QGroundControl.settingsManager.appSettings.droneName
 
     Component.onCompleted: {
         toolbar.planMasterController =  Qt.binding(function () { return _planMasterController })
@@ -589,6 +589,7 @@ QGCView {
                         anchors.fill: parent
                         onClicked: {
                             droneName  = droneName == "verok" ? "maptor" : "verok"
+                            QGroundControl.settingsManager.appSettings.droneNameFact.rawValue = droneName
                         }
                     }
                 }

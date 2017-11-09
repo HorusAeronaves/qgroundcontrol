@@ -36,6 +36,7 @@ public:
     Q_PROPERTY(Fact* indoorPalette                      READ indoorPalette                      CONSTANT)
     Q_PROPERTY(Fact* showLargeCompass                   READ showLargeCompass                   CONSTANT)
     Q_PROPERTY(Fact* savePath                           READ savePath                           CONSTANT)
+    Q_PROPERTY(Fact* droneNameFact                      READ droneNameFact                      CONSTANT)
     Q_PROPERTY(Fact* autoLoadMissions                   READ autoLoadMissions                   CONSTANT)
     Q_PROPERTY(Fact* mapboxToken                        READ mapboxToken                        CONSTANT)
     Q_PROPERTY(Fact* esriToken                          READ esriToken                          CONSTANT)
@@ -46,6 +47,8 @@ public:
     Q_PROPERTY(QString telemetrySavePath    READ telemetrySavePath  NOTIFY savePathsChanged)
     Q_PROPERTY(QString logSavePath          READ logSavePath        NOTIFY savePathsChanged)
     Q_PROPERTY(QString videoSavePath        READ videoSavePath      NOTIFY savePathsChanged)
+
+    Q_PROPERTY(QString droneName            READ droneName          NOTIFY droneNameChanged)
 
     Q_PROPERTY(QString planFileExtension        MEMBER planFileExtension        CONSTANT)
     Q_PROPERTY(QString missionFileExtension     MEMBER missionFileExtension     CONSTANT)
@@ -71,6 +74,7 @@ public:
     Fact* indoorPalette                     (void);
     Fact* showLargeCompass                  (void);
     Fact* savePath                          (void);
+    Fact* droneNameFact                     (void);
     Fact* autoLoadMissions                  (void);
     Fact* mapboxToken                       (void);
     Fact* esriToken                         (void);
@@ -81,6 +85,8 @@ public:
     QString telemetrySavePath   (void);
     QString logSavePath         (void);
     QString videoSavePath         (void);
+
+    QString droneName           (void);
 
     static MAV_AUTOPILOT offlineEditingFirmwareTypeFromFirmwareType(MAV_AUTOPILOT firmwareType);
     static MAV_TYPE offlineEditingVehicleTypeFromVehicleType(MAV_TYPE vehicleType);
@@ -103,6 +109,7 @@ public:
     static const char* indoorPaletteName;
     static const char* showLargeCompassName;
     static const char* savePathName;
+    static const char* droneNameSettingsName;
     static const char* autoLoadMissionsName;
     static const char* mapboxTokenName;
     static const char* esriTokenName;
@@ -128,6 +135,7 @@ public:
 
 signals:
     void savePathsChanged(void);
+    void droneNameChanged(void);
 
 private slots:
     void _indoorPaletteChanged(void);
@@ -150,6 +158,7 @@ private:
     SettingsFact* _indoorPaletteFact;
     SettingsFact* _showLargeCompassFact;
     SettingsFact* _savePathFact;
+    SettingsFact* _droneNameFact;
     SettingsFact* _autoLoadMissionsFact;
     SettingsFact* _mapboxTokenFact;
     SettingsFact* _esriTokenFact;
